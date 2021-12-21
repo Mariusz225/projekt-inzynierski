@@ -44,11 +44,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $orders;
 
-    public function __construct()
-    {
-        $this->orders = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
