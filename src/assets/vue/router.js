@@ -7,6 +7,7 @@ import StoreLocator from './pages/shop/StoreLocator';
 import Cart from './pages/order/Cart';
 import Checkout from './pages/order/Checkout';
 import BaseShop from './pages/shop/BaseShop'
+import Test from './tests/Test'
 
 const router = createRouter({
     history: createWebHistory(),
@@ -23,6 +24,8 @@ const router = createRouter({
         {path: '/checkout', component: Checkout, name:'checkout'},
         {path: '/shopsList', component: ShopsList},
         // {path: '/products', component: ProductsList}
+        {path: '/test', component: Test},
+
     ]
 });
 
