@@ -17,5 +17,8 @@ export default {
     setCartItems(state, payload) {
         // console.log(payload.product)
         state.cartItems = payload;
+    },
+    setViewedShop(state, payload) {
+        state.shopId = payload
     }
 }

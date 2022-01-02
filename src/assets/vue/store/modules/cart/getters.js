@@ -1,4 +1,7 @@
 export default {
+    getShopId(state) {
+        return state.shopId
+    },
     isCart(state) {
         return state.cartItems && state.cartItems.length > 0
     },

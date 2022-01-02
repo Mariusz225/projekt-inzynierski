@@ -8,8 +8,9 @@ export default {
     namespaced: true,
     state() {
         return {
+            shopId: null,
             cartItems: [],
-            productShop: []
+            // productShop: []
         };
     },
     mutations,

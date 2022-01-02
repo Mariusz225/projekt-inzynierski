@@ -94,34 +94,13 @@ export default {
     return {
       step: 1,
       shippingAddressInputs: {
-        name: {
-          value: '',
-          correct: true
-        },
-        surname: {
-          value: '',
-          correct: true
-        },
-        street: {
-          value: '',
-          correct: true
-        },
-        postcode: {
-          value: '',
-          correct: true
-        },
-        town: {
-          value: '',
-          correct: true
-        },
-        email: {
-          value: '',
-          correct: true
-        },
-        phoneNumber: {
-          value: '',
-          correct: true
-        }
+        name: '',
+        surname: '',
+        address: '',
+        postcode: '',
+        town: '',
+        email: '',
+        phoneNumber: ''
       }
     }
   },

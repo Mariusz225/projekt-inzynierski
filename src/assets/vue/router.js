@@ -25,7 +25,6 @@ const router = createRouter({
         {path: '/shopsList', component: ShopsList},
         // {path: '/products', component: ProductsList}
         {path: '/test', component: Test},
-
     ]
 });
 

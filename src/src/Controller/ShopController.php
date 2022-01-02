@@ -50,6 +50,8 @@ class ShopController extends AbstractController
             'id' => $id
         ]);
 
+
+
 //        var_dump($shop[0]['name']);
         $products = $shop->getProductsInShop();
 

@@ -62,7 +62,10 @@ export default {
 
         // context.commit('setCartItems', cartItems)
         context.commit('setCartItems', cartItems)
+    },
 
-
+    setViewedShop(context, payload) {
+        const shopId = payload.shopId;
+        context.commit('setViewedShop', shopId)
     }
 }

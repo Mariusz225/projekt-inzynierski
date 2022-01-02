@@ -2,6 +2,11 @@
   <!--Section: Block Content-->
   <!--  <section>-->
   <div className="container-lg">
+    <div v-if="viewedShop === this.shopId">
+      sss
+
+    </div>
+
 
     <!-- Grid row -->
     <div className="row">
@@ -59,7 +64,11 @@ export default {
     // },
     // productCartById() {
     //   return this.$store.getters['cart/getCartItemById(1)']
-    // }
+    // },
+    viewedShop() {
+      console.log(this.$store.getters['cart/getShopId'])
+      return this.$store.getters['cart/getShopId']
+    }
   },
   methods: {
     async loadProducts() {
@@ -72,6 +81,15 @@ export default {
 
       }
     },
+    async setViewedShop() {
+      try {
+        await this.$store.dispatch('cart/setViewedShop', {
+          shopId: this.shopId
+        })
+      } catch (error) {
+
+      }
+    }
     // async downloadCartItems() {
     //   try {
     //     await this.$store.dispatch('cart/downloadCart')
@@ -83,8 +101,17 @@ export default {
   },
   created() {
     // this.downloadCartItems();
+    var shopId = this.$store.getters['cart/getShopId']
+    if (this.shopId === shopId) {
+      console.log('sss')
+    }
+    console.log(shopId)
+    this.setViewedShop();
     this.loadProducts();
   },
+  mounted() {
+    // this.setViewedShop();
+  }
 }
 </script>
 
