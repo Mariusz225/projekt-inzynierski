@@ -83,7 +83,8 @@ class CartController extends AbstractController
         ShopRepository $shopRepository,
         Request $request,
         OrderItemRepository $orderItemRepository,
-        ProductsInShopRepository $productsInShopRepository
+        ProductsInShopRepository $productsInShopRepository,
+        SessionInterface $session
     ): JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
@@ -99,6 +100,24 @@ class CartController extends AbstractController
         $productInShop = $productsInShopRepository->find($productId);
         $price = $productInShop->getPrice();
 
+
+
+//        if (!$cart->getShop()) {
+//            $cart->setShop($productInShop->getShop());
+//        } elseif ($cart->getShop() !== $productInShop->getShop()) {
+//
+//
+//            $session->remove('cart');
+////            $cart->setShop(null);
+////            $em->persist($cart);
+//            $em->remove($cart);
+////            $em->remove($cart);
+//            $em->flush();
+//
+//            $data = $serializer->serialize(array('message' => 'badViewedShop'), JsonEncoder::FORMAT);
+//            return new JsonResponse($data, Response::HTTP_OK, [], true);
+//        }
+
         $orderItem = $orderItemRepository->findOneBy([
             'oneOrder' => $cart,
             'productShop' => $productInShop
@@ -107,11 +126,40 @@ class CartController extends AbstractController
         if ($quantity === 0) {
             $cart->removeOrderItem($orderItem);
             $em->remove($orderItem);
-            $em->persist($cart);
+//            $em->persist($cart);
             $em->flush();
+
+            if ($cart->getOrderItems()->isEmpty()) {
+//                var_dump('sss');
+                $cart->setShop(null);
+                $em->persist($cart);
+                $em->flush();
+                $data = $serializer->serialize(array('message' => 'cartIsEmpty'), JsonEncoder::FORMAT);
+                return new JsonResponse($data, Response::HTTP_OK, [], true);
+            }
 
             return new JsonResponse('true', Response::HTTP_OK, [], true);
         }
+
+
+
+        if (!$cart->getShop()) {
+            $cart->setShop($productInShop->getShop());
+        } elseif ($cart->getShop() !== $productInShop->getShop()) {
+
+
+//            $session->remove('cart');
+////            $cart->setShop(null);
+////            $em->persist($cart);
+//            $em->remove($cart);
+////            $em->remove($cart);
+//            $em->flush();
+
+            $data = $serializer->serialize(array('message' => 'badViewedShop'), JsonEncoder::FORMAT);
+            return new JsonResponse($data, Response::HTTP_OK, [], true);
+        }
+
+
 
         if (!$orderItem) {
             $orderItem = new OrderItem();
@@ -120,11 +168,12 @@ class CartController extends AbstractController
             $orderItem->setProductShop($productInShop);
             $orderItem->setPrice($price);
             $cart->addOrderItem($orderItem);
+            $cart->setShop($cart->getShop());
         } else {
             $orderItem->setQuantity($quantity);
         }
 
-
+        $em->persist($cart);
         $em->persist($orderItem);
         $em->flush();
 

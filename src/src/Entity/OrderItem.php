@@ -21,6 +21,7 @@ class OrderItem
 
     /**
      * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="orderItems")
+     * @Groups({"cart_items"})
      */
     private $oneOrder;
 

@@ -20,15 +20,34 @@ export default {
             body: JSON.stringify(newRequest)
         })
 
-        const responseData = await response;
-
+        const responseData = await response.json();
 
 
         if (!response.ok) {
             throw new Error(responseData.message || 'Failed to send request.');
         }
 
-        context.commit('updateCart', localRequest)
+
+        // console.log(String(responseData.error))
+
+        if (String(responseData.message) === 'badViewedShop') {
+            // console.log('sss')
+            context.commit('badViewedShop', true)
+        } else if (String(responseData.message) === 'cartIsEmpty') {
+            // context.commit('badViewedShop', null)
+
+            console.log('s')
+            context.commit('updateCart', localRequest)
+
+            context.commit('removeCart');
+            // context.commit('badViewedShop', null)
+
+
+        } else {
+            context.commit('badViewedShop', false)
+            context.commit('updateCart', localRequest)
+        }
+
     },
 
     async downloadCart(context, payload) {
@@ -46,26 +65,24 @@ export default {
         }
 
         const cartItems = [];
+        let shopId = responseData[0].oneOrder.shop.id;
+
 
         for (const key in responseData) {
-
             const cartItem = {
                 productId: responseData[key].productShop.id,
                 // orderItemId: responseData[key].productShop.id,
                 product: responseData[key].productShop.products,
                 quantity: responseData[key].quantity,
                 price: responseData[key].productShop.price,
+                // xd: responseData[key].oneOrder,
             }
-
             cartItems.push(cartItem)
         }
 
-        // context.commit('setCartItems', cartItems)
-        context.commit('setCartItems', cartItems)
-    },
+        // console.log(shopId)
 
-    setViewedShop(context, payload) {
-        const shopId = payload.shopId;
-        context.commit('setViewedShop', shopId)
-    }
+        context.commit('setCartItems', cartItems)
+        context.commit('setViewedShopId', shopId)
+    },
 }

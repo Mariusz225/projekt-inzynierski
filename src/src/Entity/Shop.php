@@ -6,6 +6,7 @@ use App\Repository\ShopRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ShopRepository::class)
@@ -16,6 +17,7 @@ class Shop
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"cart_items"})
      */
     private $id;
 
@@ -29,9 +31,15 @@ class Shop
      */
     private $productsInShop;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="shop")
+     */
+    private $orders;
+
     public function __construct()
     {
         $this->productsInShop = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,6 +83,36 @@ class Shop
             // set the owning side to null (unless already changed)
             if ($productsInShop->getShop() === $this) {
                 $productsInShop->setShop(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->setShop($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->removeElement($order)) {
+            // set the owning side to null (unless already changed)
+            if ($order->getShop() === $this) {
+                $order->setShop(null);
             }
         }
 

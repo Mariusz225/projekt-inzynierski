@@ -3,7 +3,7 @@
   <!--  <section>-->
   <div className="container-lg">
     <div v-if="viewedShop === this.shopId">
-      sss
+      xas
 
     </div>
 
@@ -66,7 +66,8 @@ export default {
     //   return this.$store.getters['cart/getCartItemById(1)']
     // },
     viewedShop() {
-      console.log(this.$store.getters['cart/getShopId'])
+      // console.log(this.$store.getters['cart/getShopId'])
+      // console.log(this.shopId)
       return this.$store.getters['cart/getShopId']
     }
   },
@@ -81,15 +82,15 @@ export default {
 
       }
     },
-    async setViewedShop() {
-      try {
-        await this.$store.dispatch('cart/setViewedShop', {
-          shopId: this.shopId
-        })
-      } catch (error) {
-
-      }
-    }
+    // async setViewedShop() {
+    //   try {
+    //     await this.$store.dispatch('cart/setViewedShop', {
+    //       shopId: this.shopId
+    //     })
+    //   } catch (error) {
+    //
+    //   }
+    // }
     // async downloadCartItems() {
     //   try {
     //     await this.$store.dispatch('cart/downloadCart')
@@ -105,8 +106,8 @@ export default {
     if (this.shopId === shopId) {
       console.log('sss')
     }
-    console.log(shopId)
-    this.setViewedShop();
+    // console.log(shopId)
+    // this.setViewedShop();
     this.loadProducts();
   },
   mounted() {

@@ -8,7 +8,7 @@ export default {
     namespaced: true,
     state() {
         return {
-            shopId: null,
+            badViewedShop: null,
             cartItems: [],
             // productShop: []
         };

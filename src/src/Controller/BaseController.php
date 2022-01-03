@@ -15,4 +15,11 @@ class BaseController extends AbstractController
     {
         return $this->render('base.html.twig');
     }
+    /**
+     * @Route("/xd", name="main")
+     */
+    public function xd(): Response
+    {
+        return $this->render('base.html.twig');
+    }
 }

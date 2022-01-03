@@ -13,12 +13,19 @@ export default {
             state.cartItems.push(payload)
         }
     },
+    removeCart(state, payload) {
+        state.cartItems = [];
+        state.badViewedShop = null;
+    },
 
     setCartItems(state, payload) {
         // console.log(payload.product)
         state.cartItems = payload;
     },
-    setViewedShop(state, payload) {
+    setViewedShopId(state, payload) {
         state.shopId = payload
+    },
+    badViewedShop(state, payload) {
+        state.badViewedShop = payload
     }
 }

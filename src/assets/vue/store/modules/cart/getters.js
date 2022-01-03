@@ -18,5 +18,8 @@ export default {
         // })
         // return total;
         return getters.cartItems.reduce((total, product) => total + product.price * product.quantity, 0)
+    },
+    badViewedShop(state) {
+        return state.badViewedShop
     }
 }

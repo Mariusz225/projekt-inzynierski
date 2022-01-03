@@ -6,6 +6,7 @@ use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
@@ -35,6 +36,12 @@ class Order
      * @ORM\OneToMany(targetEntity=OrderItem::class, mappedBy="oneOrder")
      */
     private $orderItems;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="orders")
+     * @Groups({"cart_items"})
+     */
+    private $shop;
 
     public function __construct()
     {
@@ -96,6 +103,18 @@ class Order
                 $orderItem->setOneOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getShop(): ?Shop
+    {
+        return $this->shop;
+    }
+
+    public function setShop(?Shop $shop): self
+    {
+        $this->shop = $shop;
 
         return $this;
     }
