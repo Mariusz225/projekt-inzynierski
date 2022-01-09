@@ -30,7 +30,7 @@ class CartController extends AbstractController
     /**
      * @var Status|null
      */
-    private $cartStatus;
+    private ?Status $cartStatus;
     /**
      * @var mixed
      */

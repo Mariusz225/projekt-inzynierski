@@ -8,6 +8,8 @@ import Cart from './pages/order/Cart';
 import Checkout from './pages/order/Checkout';
 import BaseShop from './pages/shop/BaseShop'
 import Test from './tests/Test'
+import LogIn from "./pages/auth/LogIn";
+import Register from "./pages/auth/Register";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -23,6 +25,9 @@ const router = createRouter({
         {path: '/cart', component: Cart, name:'cart'},
         {path: '/checkout', component: Checkout, name:'checkout'},
         {path: '/shopsList', component: ShopsList},
+        {path: '/login', component: LogIn},
+        {path: '/register', component: Register},
+
         // {path: '/products', component: ProductsList}
         {path: '/test', component: Test},
     ]

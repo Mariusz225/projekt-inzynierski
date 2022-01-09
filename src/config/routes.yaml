@@ -1,6 +1,6 @@
-login:
-    path: /login
-    controller: App\Controller\SecurityController:login
+#login:
+#    path: /login
+#    controller: App\Controller\SecurityController:login
 index:
     path: /{wildcard}
     controller: App\Controller\BaseController::index
