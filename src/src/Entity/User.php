@@ -44,6 +44,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $orders;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Employee::class, mappedBy="user")
+     */
+    private $employees;
+
+    public function __construct()
+    {
+        $this->employees = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -161,5 +171,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Employee[]
+     */
+    public function getEmployees(): Collection
+    {
+        return $this->employees;
+    }
+
+    public function addEmployee(Employee $employee): self
+    {
+        if (!$this->employees->contains($employee)) {
+            $this->employees[] = $employee;
+            $employee->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEmployee(Employee $employee): self
+    {
+        if ($this->employees->removeElement($employee)) {
+            // set the owning side to null (unless already changed)
+            if ($employee->getUser() === $this) {
+                $employee->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->email;
     }
 }

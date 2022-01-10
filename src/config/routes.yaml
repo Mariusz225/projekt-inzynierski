@@ -1,6 +1,11 @@
-#login:
-#    path: /login
-#    controller: App\Controller\SecurityController:login
+admin:
+    path: /admin
+    controller: App\Controller\Admin\DashboardController::index
+service:
+    path: /service/{wildcard}
+    controller: App\Controller\BaseController::service
+    requirements:
+        wildcard: .*
 index:
     path: /{wildcard}
     controller: App\Controller\BaseController::index

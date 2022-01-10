@@ -24,6 +24,7 @@ class Order
     /**
      * @ORM\ManyToOne(targetEntity=Status::class, inversedBy="orders")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups ({"order_shopkeeper"})
      */
     private $status;
 

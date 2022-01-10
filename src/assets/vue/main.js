@@ -3,6 +3,7 @@ import {createApp} from "vue";
 import router from './router';
 import store from "./store";
 import App from './App';
+import AppService from './AppService';
 import BaseCard from './components/ui/BaseCard';
 
 
@@ -13,6 +14,11 @@ app.use(store);
 
 app.component('base-card', BaseCard);
 
-
-
 app.mount('#app');
+
+
+
+const appService = createApp(AppService);
+appService.use(router);
+appService.use(store);
+appService.mount('#service');

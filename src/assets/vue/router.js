@@ -10,6 +10,8 @@ import BaseShop from './pages/shop/BaseShop'
 import Test from './tests/Test'
 import LogIn from "./pages/auth/LogIn";
 import Register from "./pages/auth/Register";
+import Owner from "./pages/shopService/Owner";
+import Shopkeeper from "./pages/shopService/Shopkeeper";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -27,6 +29,18 @@ const router = createRouter({
         {path: '/shopsList', component: ShopsList},
         {path: '/login', component: LogIn},
         {path: '/register', component: Register},
+        {
+            path: '/service/:shopId/owner',
+            component: Owner,
+            name:'owner',
+            props: true
+        },
+        {
+            path: '/service/:shopId/shopkeeper',
+            component: Shopkeeper,
+            name:'shopkeeper',
+            props: true
+        },
 
         // {path: '/products', component: ProductsList}
         {path: '/test', component: Test},

@@ -36,10 +36,16 @@ class Shop
      */
     private $orders;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Employee::class, mappedBy="shop")
+     */
+    private $employees;
+
     public function __construct()
     {
         $this->productsInShop = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->employees = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,5 +123,40 @@ class Shop
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Employee[]
+     */
+    public function getEmployees(): Collection
+    {
+        return $this->employees;
+    }
+
+    public function addEmployee(Employee $employee): self
+    {
+        if (!$this->employees->contains($employee)) {
+            $this->employees[] = $employee;
+            $employee->setShop($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEmployee(Employee $employee): self
+    {
+        if ($this->employees->removeElement($employee)) {
+            // set the owning side to null (unless already changed)
+            if ($employee->getShop() === $this) {
+                $employee->setShop(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }
