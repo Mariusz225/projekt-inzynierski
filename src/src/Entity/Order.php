@@ -18,6 +18,7 @@ class Order
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"order_shopkeeper", "order_items_info"})
      */
     private $id;
 
@@ -35,6 +36,7 @@ class Order
 
     /**
      * @ORM\OneToMany(targetEntity=OrderItem::class, mappedBy="oneOrder")
+     * @Groups ({"order_items_info"})
      */
     private $orderItems;
 
@@ -43,6 +45,12 @@ class Order
      * @Groups({"cart_items"})
      */
     private $shop;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @Groups ({"order_shopkeeper"})
+     */
+    private $date;
 
     public function __construct()
     {
@@ -116,6 +124,18 @@ class Order
     public function setShop(?Shop $shop): self
     {
         $this->shop = $shop;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(?\DateTimeInterface $date): self
+    {
+        $this->date = $date;
 
         return $this;
     }

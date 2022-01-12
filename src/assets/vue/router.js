@@ -12,6 +12,7 @@ import LogIn from "./pages/auth/LogIn";
 import Register from "./pages/auth/Register";
 import Owner from "./pages/shopService/Owner";
 import Shopkeeper from "./pages/shopService/Shopkeeper";
+import CompletingTheOrder from "./pages/shopService/CompletingTheOrder";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -39,6 +40,12 @@ const router = createRouter({
             path: '/service/:shopId/shopkeeper',
             component: Shopkeeper,
             name:'shopkeeper',
+            props: true,
+        },
+        {
+            path: '/service/:shopId/completingTheOrder/:orderId',
+            component: CompletingTheOrder,
+            name: 'completingTheOrder',
             props: true
         },
 

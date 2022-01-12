@@ -15,7 +15,7 @@ class OrderItem
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"cart_items"})
+     * @Groups({"cart_items", "order_items_info"})
      */
     private $id;
 
@@ -27,13 +27,13 @@ class OrderItem
 
     /**
      * @ORM\ManyToOne(targetEntity=ProductsInShop::class, inversedBy="orderItems")
-     * @Groups({"cart_items"})
+     * @Groups({"cart_items", "order_items_info"})
      */
     private $productShop;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"cart_items"})
+     * @Groups({"cart_items", "order_items_info"})
      */
     private $quantity;
 

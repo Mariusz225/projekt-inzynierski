@@ -28,7 +28,7 @@ class ProductsInShop
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="productsInShops")
-     * @Groups({"products_in_shop", "cart_items"})
+     * @Groups({"products_in_shop", "cart_items", "order_items_info"})
      */
     private $products;
 

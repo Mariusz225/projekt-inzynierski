@@ -32,7 +32,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"products_in_shop", "cart_items"})
+     * @Groups({"products_in_shop", "cart_items", "order_items_info"})
      */
     private $name;
 

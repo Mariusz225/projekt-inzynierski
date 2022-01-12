@@ -1,7 +1,13 @@
 export default {
-    setEmployee(state, payload) {
-        state.token = payload.token;
-        state.userId = payload.userId;
-        state.tokenExpiration = payload.tokenExpiration;
+    setOrders(state, payload) {
+        state.orders = payload;
+    },
+    setOrderItems(state, payload) {
+        // console.log(payload)
+        state.orderItems = payload;
+        // state.orderItems.push(payload)
+        // state.orderItems[payload.id] = payload
+
+
     }
 };

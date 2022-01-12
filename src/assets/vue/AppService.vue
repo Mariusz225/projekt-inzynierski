@@ -2,7 +2,10 @@
   <h1>
     navbar serwis
   </h1>
-  <router-view></router-view>
+  <div class="container">
+    <router-view></router-view>
+
+  </div>
 
 </template>
 

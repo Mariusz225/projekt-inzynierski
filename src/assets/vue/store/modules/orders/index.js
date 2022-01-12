@@ -6,9 +6,15 @@ export default {
     namespaced: true,
     state() {
         return {
-            // userId: null,
-            // token: null,
-            // tokenExpiration: null
+            // orders: [
+            //     {
+            //         orderId: '',
+            //         orderItems: []
+            //     }
+            // ],
+            // orders: [],
+            orders: [],
+            orderItems: []
         };
     },
     mutations,

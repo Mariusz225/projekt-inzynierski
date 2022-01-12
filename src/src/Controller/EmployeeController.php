@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Repository\EmployeeRepository;
+use App\Repository\OrderItemRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductsInShopRepository;
 use App\Repository\ShopRepository;
@@ -99,13 +100,28 @@ class EmployeeController extends AbstractController
 
             return new JsonResponse($data, Response::HTTP_OK, [], true);
         }
-//        foreach ($dupa as $xd) {
-//            if ($xd === 'b') {
-//                var_dump($xd);
-//                break;
-//            }
-//        }
-//        var_dump($dupa);
         return new JsonResponse(false);
+    }
+
+    /**
+     * @Rest\Get ("/getOrderInfo/{id}", name="getOrderInfo")
+     */
+    public function getOrderInfo(
+        int $id,
+        OrderRepository $orderRepository,
+        SerializerInterface $serializer,
+        OrderItemRepository $orderItemRepository
+    ): JsonResponse
+    {
+        $order = $orderRepository->find($id);
+        $orderItems = $order->getOrderItems();
+
+//        $orderItems = $orderItemRepository->findBy([
+//            'oneOrder' => $order
+//            ]);
+
+        $data = $serializer->serialize($orderItems, JsonEncoder::FORMAT, ['groups' => 'order_items_info']);
+
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 }
