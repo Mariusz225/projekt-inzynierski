@@ -2,15 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\DateAvailability;
 use App\Entity\Order;
 use App\Entity\OrderItem;
 use App\Entity\Status;
+use App\Repository\DateAvailabilityRepository;
 use App\Repository\OrderItemRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductsInShopRepository;
 use App\Repository\ShopRepository;
 use App\Repository\StatusRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -210,5 +214,58 @@ class CartController extends AbstractController
 
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @Rest\POST("/submitOrder", name="submitOrder")
+     * @throws Exception
+     */
+    public function submitOrder(
+        Request $request,
+        OrderRepository $orderRepository,
+        SerializerInterface $serializer,
+        DateAvailabilityRepository $dateAvailabilityRepository,
+        EntityManagerInterface $entityManager,
+        StatusRepository $statusRepository
+    ): JsonResponse
+    {
+        $cart = $orderRepository->findOneBy([
+            'id' => $this->cartId,
+            'status' => $this->cartStatus
+        ]);
+
+        $postData = json_decode($request->getContent(), true);
+        $shippingAddressInputs = $postData['shippingAddressInputs'];
+        $deliveryDateId = $postData['deliveryDateId'];
+
+//        var_dump($shippingAddressInputs);
+//        var_dump($shippingAddressInputs['name']);
+//        var_dump($deliveryDateId);
+
+
+        $cart->setName($shippingAddressInputs['name']);
+        $cart->setSurname($shippingAddressInputs['surname']);
+        $cart->setStreet($shippingAddressInputs['address']);
+        $cart->setPostcode($shippingAddressInputs['postcode']);
+        $cart->setTown($shippingAddressInputs['town']);
+        $cart->setEmail($shippingAddressInputs['email']);
+        $cart->setPhoneNumber($shippingAddressInputs['phoneNumber']);
+
+        $date = $dateAvailabilityRepository->find($deliveryDateId);
+
+//        var_dump($date->getDate());
+
+        $statusOrdered = $statusRepository->findOneBy([
+            'name' => 'ordered'
+        ]);
+
+        $cart->setDate($date->getDate());
+        $cart->setStatus($statusOrdered);
+
+        $entityManager->persist($cart);
+        $entityManager->flush();
+
+
+        return new JsonResponse('true', Response::HTTP_OK, [], true);
     }
 }

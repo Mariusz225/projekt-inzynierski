@@ -9,5 +9,8 @@ export default {
         // state.orderItems[payload.id] = payload
 
 
+    },
+    setOrderInfo(state, payload) {
+        console.log(payload)
     }
 };

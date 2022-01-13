@@ -1,0 +1,79 @@
+<template>
+  <div class="card" v-for="order in orders">
+
+    <completing-the-order
+        :key="order.id"
+        :order="order"
+        @change-status="changeStatus"
+    ></completing-the-order>
+  </div>
+
+  <div id="goToOrders" class="card-footer text-muted fixed-bottom m-4" v-if="numberOfAllOrders">
+    <router-link :to="{ name: 'shopkeeper' }" v-if="allOrdersAreCompleted">
+      <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="setOrderAsSent">Idź do dostawy</button>
+    </router-link>
+    <button type="button" disabled class="btn btn-primary btn-lg btn-block" style="width: 100%" v-else>Idź do dostawy</button>
+  </div>
+</template>
+
+<script>
+import Order from "../../components/layout/employee/shopkeeper/Order";
+import CompletingTheOrder from "../../components/layout/employee/driver/CompletingTheOrder";
+export default {
+  components: {CompletingTheOrder, Order},
+  props: ['shopId'],
+  data() {
+    return {
+      // numberOfAllOrderItems: 0,
+      numberOfCompletedOrders: 0,
+      allOrdersAreCompleted: false
+
+    }
+  },
+  computed: {
+    orders() {
+      // console.log(this.$store.getters['orders/getOrders'])
+      return this.$store.getters['orders/getOrders'];
+    },
+    numberOfAllOrders() {
+      // console.log(this.$store.getters['orders/getOrderItems'].length)
+      return this.$store.getters['orders/getOrders'].length
+    },
+  },
+
+  methods: {
+    async loadOrders() {
+      try {
+        await this.$store.dispatch('orders/getDriverOrdersInShop', {
+          shopId: this.shopId
+        })
+      } catch (error) {
+      }
+    },
+    changeStatus(status) {
+      if (status === true) {
+        this.numberOfCompletedOrders += 1
+      } else {
+        this.numberOfCompletedOrders -= 1
+      }
+      // this.numberOfCompletedOrderItems = valueOfCompletedItems
+    },
+    async setOrderAsSent() {
+      await this.$store.dispatch('orders/setOrderAsWaitingForDelivery', {
+        orderId: this.orderId
+      })
+    },
+  },
+
+  watch: {
+    numberOfCompletedOrders: function (val) {
+      // this.allOrderItemsAreCompleted = val === this.numberOfAllOrders;
+      this.allOrdersAreCompleted = val === this.numberOfAllOrders;
+
+    }
+  },
+  created() {
+    this.loadOrders();
+  }
+}
+</script>

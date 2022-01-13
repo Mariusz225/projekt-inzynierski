@@ -10,7 +10,7 @@
 
     <div class="card-body d-flex col-8">
       <div class="me-auto p-2 text-wrap">
-        5 x 4
+        {{orderItem.quantity}} x {{orderItem.productShop.products.name}}
 
       </div>
       <div class="p-2 mb-auto mt-auto" @click="">

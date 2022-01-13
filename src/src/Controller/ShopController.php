@@ -4,10 +4,12 @@ namespace App\Controller;
 
 
 use App\Entity\Category;
+use App\Entity\DateAvailability;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Repository\OrderRepository;
+use App\Repository\ProductRepository;
 use App\Repository\ProductsInShopRepository;
 use App\Repository\ShopRepository;
 use App\Repository\StatusRepository;
@@ -62,4 +64,55 @@ class ShopController extends AbstractController
 //        return $this->json($products);
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
+
+    /**
+     * @Rest\Get("/getShopDatesAvailabilities")
+     * @param ShopRepository $shopRepository
+     * @param ProductsInShopRepository $productsInShopRepository
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $em
+     * @param SessionInterface $session
+     * @param OrderRepository $orderRepository
+     * @param ProductRepository $productRepository
+     * @return JsonResponse
+     */
+    public function getShopDatesAvailabilities(
+        ShopRepository $shopRepository,
+        ProductsInShopRepository $productsInShopRepository,
+        SerializerInterface $serializer,
+        EntityManagerInterface $em,
+        SessionInterface $session,
+        OrderRepository $orderRepository,
+        ProductRepository $productRepository
+    ): JsonResponse
+    {
+//        $shop = $shopRepository->find($id);
+
+        $isSessionCart = $session->has('cart');
+
+        //TODO sprawdzić
+        if ($isSessionCart) {
+            $cartId = $session->get('cart');
+        } else return new JsonResponse(false);
+
+        $order = $orderRepository->find($cartId);
+
+        $dateAvailabilities = $order->getShop()->getDateAvailabilities()->filter(function (DateAvailability $dateAvailability) {
+                return $dateAvailability->getQuantity() > 0;
+            });
+
+
+//        $dateAvailabilities =  $shop->getDateAvailabilities()->filter(function (DateAvailability $dateAvailability) {
+//            return $dateAvailability->getQuantity() > 0;
+//        });
+
+
+        $data = $serializer->serialize($dateAvailabilities, JsonEncoder::FORMAT, ['groups' => 'shop_date_availability']);
+
+
+//        var_dump(count($products));
+//        return $this->json($products);
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
 }

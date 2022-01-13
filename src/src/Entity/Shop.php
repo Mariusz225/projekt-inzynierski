@@ -41,11 +41,17 @@ class Shop
      */
     private $employees;
 
+    /**
+     * @ORM\OneToMany(targetEntity=DateAvailability::class, mappedBy="shop")
+     */
+    private $dateAvailabilities;
+
     public function __construct()
     {
         $this->productsInShop = new ArrayCollection();
         $this->orders = new ArrayCollection();
         $this->employees = new ArrayCollection();
+        $this->dateAvailabilities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,5 +164,35 @@ class Shop
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * @return Collection|DateAvailability[]
+     */
+    public function getDateAvailabilities(): Collection
+    {
+        return $this->dateAvailabilities;
+    }
+
+    public function addDateAvailability(DateAvailability $dateAvailability): self
+    {
+        if (!$this->dateAvailabilities->contains($dateAvailability)) {
+            $this->dateAvailabilities[] = $dateAvailability;
+            $dateAvailability->setShop($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDateAvailability(DateAvailability $dateAvailability): self
+    {
+        if ($this->dateAvailabilities->removeElement($dateAvailability)) {
+            // set the owning side to null (unless already changed)
+            if ($dateAvailability->getShop() === $this) {
+                $dateAvailability->setShop(null);
+            }
+        }
+
+        return $this;
     }
 }

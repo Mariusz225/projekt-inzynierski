@@ -26,6 +26,7 @@
       <div class="col-md-8 order-md-1">
         <h4 class="mb-3">Dane do zamówienia</h4>
 
+
         <div class="mt-3">
           <div class="alert alert-primary row">
             <div class="col">1. Opcje dostawy</div>
@@ -47,6 +48,8 @@
 
         <div v-show="step===2">
           <date-of-delivery
+              :shippingAddressInputs="shippingAddressInputs"
+              @set-date-id="setDateId"
               @set-step="setStep"
           ></date-of-delivery>
         </div>
@@ -72,11 +75,19 @@
         </div>
 
 
+
         <div class="mt-3">
           <div class="alert alert-primary row">
             <div class="col">3. Podsumowanie</div>
           </div>
         </div>
+
+        <div v-show="step===4">
+          <button type="button" class="btn btn-primary btn-lg btn-block mt-3" style="width: 100%" @click="submitOrder">
+            Złóż zamówienie
+          </button>
+        </div>
+
 
       </div>
     </div>
@@ -101,12 +112,30 @@ export default {
         town: '',
         email: '',
         phoneNumber: ''
-      }
+      },
+      deliveryDateId: null
     }
   },
+  // computed: {
+  //   deliveryDateId() {
+  //     return null;
+  //   }
+  // },
   methods: {
     setStep(step) {
       this.step = step
+    },
+    setDateId(id) {
+      this.deliveryDateId = id;
+    },
+    async submitOrder() {
+      try {
+        await this.$store.dispatch('orders/submitOrder', [
+            this.shippingAddressInputs,
+            this.deliveryDateId
+          ])
+      } catch (error) {
+      }
     },
   }
 }

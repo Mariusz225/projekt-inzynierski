@@ -1,40 +1,41 @@
 <template>
   <div class="card p-2">
-    <div>
-      <div>Imię i nazwisko</div>
-      <div>Adres</div>
-      <div>Miejsowość kod</div>
-      <div>e-mail</div>
-      <div>numer telefonu</div>
+      <div class="row">
+        <div class="col-auto">
+          <div>{{ shippingAddressInputs.name }} {{ shippingAddressInputs.surname }}</div>
+          <div>{{ shippingAddressInputs.address }}</div>
+          <div>{{ shippingAddressInputs.town }} {{ shippingAddressInputs.postcode }}</div>
+          <div>{{ shippingAddressInputs.email }}</div>
+          <div>{{ shippingAddressInputs.phoneNumber }}</div>
+        </div>
+        <div class="col">
+          <div class="float-end">
+<!--            <button type="button" class="btn btn-primary btn-lg btn-block"  @click="goBackToShippingAddresses">-->
+<!--              Wróć-->
+<!--            </button>-->
+            <font-awesome-icon :icon="['fas', 'edit']" class="fa-4x" @click="goBackToShippingAddresses"></font-awesome-icon>
+          </div>
+        </div>
+
+
+
+      </div>
     </div>
-    <div>
-      <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="goBackToShippingAddresses">
-        Wróć
-      </button>
-    </div>
-  </div>
+
 
   <div class="mt-4">
     <h5>Wybierz datę dostawy</h5>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-      <label class="form-check-label" for="flexRadioDefault1">
-        Dostawa 1
-      </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-      <label class="form-check-label" for="flexRadioDefault2">
-        Dostawa 2
-      </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-      <label class="form-check-label" for="flexRadioDefault2">
-        Dostawa 3
-      </label>
+    <div v-for="date in dates">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="dateDelivery" :id="date.id" :value="date.id" v-model="dateId" @change="updatePickedDateId" />
+        <label class="form-check-label" :for="date.id">
+          {{ date.date }}
+        </label>
+      </div>
     </div>
   </div>
+
+
 
   <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="goToPaymentMethod">
     Przejdź do płatności
@@ -43,15 +44,47 @@
 
 <script>
 export default {
-  props: {},
-  emits: ['set-step'],
+  props: {
+    shippingAddressInputs: {
+      type: Object,
+      required: true
+    },
+  },
+  emits: ['set-step', 'set-date-id'],
+  data() {
+    return {
+      dateId: null
+    };
+  },
+  computed: {
+    dates() {
+      // console.log(this.$store.getters['shops/getShopDatesAvailabilities'].setHours(0,0,0,0))
+      // console.log(this.dateId)
+      return this.$store.getters['shops/getShopDatesAvailabilities'];
+    },
+    picked() {
+      console.log()
+    }
+  },
   methods: {
     goBackToShippingAddresses() {
       this.$emit('set-step', 1);
     },
     goToPaymentMethod() {
       this.$emit('set-step', 3);
+    },
+    async downloadAvailabilityOrderDate() {
+      try {
+        await this.$store.dispatch('shops/fetchAvailabilityOrderDate')
+      } catch (error) {
+      }
+    },
+    updatePickedDateId() {
+      this.$emit('set-date-id', this.dateId)
     }
+  },
+  created() {
+    this.downloadAvailabilityOrderDate()
   }
 }
 </script>

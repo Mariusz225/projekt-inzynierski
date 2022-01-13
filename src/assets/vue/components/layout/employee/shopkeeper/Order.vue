@@ -55,5 +55,17 @@ export default {
 
     }
   },
+  methods: {
+    // async goToCompletingOrder() {
+    //   // console.log(this.order.id)
+    //   this.orderId = parseInt(this.order.id);
+    //   await this.$store.dispatch('orders/fetchOrderInfo', {
+    //     orderId: this.orderId
+    //   })
+    //   // if (response === 'ordered') {
+    //   //   console.log('nie da rady')
+    //   // }
+    // },
+  }
 }
 </script>

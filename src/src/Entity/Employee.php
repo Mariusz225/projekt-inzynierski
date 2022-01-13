@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EmployeeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -36,6 +38,22 @@ class Employee
 
      */
     private $role = [];
+
+    /**
+     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="employee")
+     */
+    private $orders;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="driver")
+     */
+    private $driverOrders;
+
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+        $this->driverOrders = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -74,6 +92,66 @@ class Employee
     public function setRole(array $role): self
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->setEmployee($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->removeElement($order)) {
+            // set the owning side to null (unless already changed)
+            if ($order->getEmployee() === $this) {
+                $order->setEmployee(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getDriverOrders(): Collection
+    {
+        return $this->driverOrders;
+    }
+
+    public function addDriverOrder(Order $driverOrder): self
+    {
+        if (!$this->driverOrders->contains($driverOrder)) {
+            $this->driverOrders[] = $driverOrder;
+            $driverOrder->setDriver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDriverOrder(Order $driverOrder): self
+    {
+        if ($this->driverOrders->removeElement($driverOrder)) {
+            // set the owning side to null (unless already changed)
+            if ($driverOrder->getDriver() === $this) {
+                $driverOrder->setDriver(null);
+            }
+        }
 
         return $this;
     }

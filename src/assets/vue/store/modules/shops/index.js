@@ -7,6 +7,7 @@ export default {
     state() {
         return {
             lastFetch: null,
+            shopDatesAvailabilities: [],
             shops: {
                 "type": "FeatureCollection",
                 "features": [{

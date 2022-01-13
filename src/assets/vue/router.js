@@ -12,6 +12,7 @@ import LogIn from "./pages/auth/LogIn";
 import Register from "./pages/auth/Register";
 import Owner from "./pages/shopService/Owner";
 import Shopkeeper from "./pages/shopService/Shopkeeper";
+import Driver from "./pages/shopService/Driver";
 import CompletingTheOrder from "./pages/shopService/CompletingTheOrder";
 
 const router = createRouter({
@@ -40,6 +41,12 @@ const router = createRouter({
             path: '/service/:shopId/shopkeeper',
             component: Shopkeeper,
             name:'shopkeeper',
+            props: true,
+        },
+        {
+            path: '/service/:shopId/driver',
+            component: Driver,
+            name:'driver',
             props: true,
         },
         {

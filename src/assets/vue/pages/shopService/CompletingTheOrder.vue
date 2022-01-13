@@ -1,10 +1,12 @@
 <template>
   <div>
     <h1>
-      {{shopId}} - {{orderId}}
+<!--      {{shopId}} - {{orderId}}-->
     </h1>
     <h2>
-      {{numberOfCompletedOrderItems}}
+<!--      {{numberOfAllOrderItems}}-->
+<!--      {{numberOfCompletedOrderItems}}-->
+<!--      {{allOrderItemsAreCompleted}}-->
     </h2>
   </div>
 
@@ -45,10 +47,11 @@
 <!--        :order="order"-->
 <!--    ></order>-->
   </div>
-  <div id="goToPaymentSm" class="card-footer text-muted fixed-bottom m-4">
-    <router-link :to="{ name: 'checkout' }">
-      <button type="button" disabled class="btn btn-primary btn-lg btn-block" style="width: 100%">Skomplemetowane</button>
+  <div id="goToOrders" class="card-footer text-muted fixed-bottom m-4" v-if="numberOfAllOrderItems">
+    <router-link :to="{ name: 'shopkeeper' }" v-if="allOrderItemsAreCompleted">
+      <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="setOrderAsWaitingForDelivery">Skomplemetowane</button>
     </router-link>
+    <button type="button" disabled class="btn btn-primary btn-lg btn-block" style="width: 100%" v-else>Skomplemetowane</button>
   </div>
 </template>
 
@@ -60,8 +63,10 @@ export default {
   props: ['shopId', 'orderId'],
   data() {
     return {
-      numberOfAllOrderItems: 5,
-      numberOfCompletedOrderItems: 0
+      // numberOfAllOrderItems: 0,
+      numberOfCompletedOrderItems: 0,
+      allOrderItemsAreCompleted: false
+
     }
   },
   computed: {
@@ -70,6 +75,10 @@ export default {
       return this.$store.getters['orders/getOrderItems']
       // return ['s','s']
     },
+    numberOfAllOrderItems() {
+      // console.log(this.$store.getters['orders/getOrderItems'].length)
+      return this.$store.getters['orders/getOrderItems'].length
+    }
     // orders() {
     //   // console.log(this.$store.getters['orders/getOrders'])
     //   return this.$store.getters['orders/getOrders']
@@ -91,13 +100,13 @@ export default {
     // },
   },
   methods: {
-    async loadOrder() {
+    async loadOrderItems() {
       try {
         // var shopId = this.shopId;
-        console.log(this.orderId)
+        // console.log(this.orderId)
         parseInt(this.orderId);
-        await this.$store.dispatch('orders/fetchOrderInfo', {
-          shopId: this.shopId,
+        await this.$store.dispatch('orders/fetchOrderProductsInfo', {
+          // shopId: this.shopId,
           orderId: this.orderId
         })
       } catch (error) {
@@ -110,10 +119,28 @@ export default {
         this.numberOfCompletedOrderItems -= 1
       }
       // this.numberOfCompletedOrderItems = valueOfCompletedItems
+    },
+    async fetchOrderInfo() {
+      console.log('ssas')
+      // this.orderId = parseInt(this.order.id);
+      await this.$store.dispatch('orders/fetchOrderInfo', {
+        orderId: this.orderId
+      })
+    },
+    async setOrderAsWaitingForDelivery() {
+      await this.$store.dispatch('orders/setOrderAsWaitingForDelivery', {
+        orderId: this.orderId
+      })
+    }
+  },
+  watch: {
+    numberOfCompletedOrderItems: function (val) {
+      this.allOrderItemsAreCompleted = val === this.numberOfAllOrderItems;
     }
   },
   created() {
-    this.loadOrder();
+    this.fetchOrderInfo();
+    this.loadOrderItems();
   }
 }
 </script>

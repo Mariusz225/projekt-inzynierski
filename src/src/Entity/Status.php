@@ -22,7 +22,7 @@ class Status
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups ({"order_shopkeeper"})
+     * @Groups ({"order_shopkeeper", "order_info"})
      */
     private $name;
 
