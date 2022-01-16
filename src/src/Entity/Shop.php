@@ -46,6 +46,18 @@ class Shop
      */
     private $dateAvailabilities;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     * @Groups ({"shop_info"})
+     */
+    private $coordinates = [];
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups ({"shop_info"})
+     */
+    private $address;
+
     public function __construct()
     {
         $this->productsInShop = new ArrayCollection();
@@ -192,6 +204,30 @@ class Shop
                 $dateAvailability->setShop(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCoordinates(): ?array
+    {
+        return $this->coordinates;
+    }
+
+    public function setCoordinates(?array $coordinates): self
+    {
+        $this->coordinates = $coordinates;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }

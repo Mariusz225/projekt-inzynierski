@@ -29,7 +29,7 @@ export default {
 
       // return (String(this.$store.getters['cart/getShopId']) !== this.$route.params.shopId);
 
-      console.log(this.$store.getters['cart/badViewedShop'])
+      // console.log(this.$store.getters['cart/badViewedShop'])
       return this.$store.getters['cart/badViewedShop']
     }
   },

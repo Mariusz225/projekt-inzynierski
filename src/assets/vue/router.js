@@ -1,6 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 
 import ShopsList from './pages/shop/ShopsList';
+import LandingPage from './pages/landingPage/LandingPage';
 // import ProductsList from './pages/shop/ProductsList';
 import ProductsList from "./pages/products/ProductsList";
 import StoreLocator from './pages/shop/StoreLocator';
@@ -18,14 +19,15 @@ import CompletingTheOrder from "./pages/shopService/CompletingTheOrder";
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        {path: '/', redirect: to => 'shop'},
+        // {path: '/', redirect: to => 'shop'},
+        {path: '/', component: LandingPage,},
         {
             path: '/shop/:shopId',
             component: ProductsList,
             name:'shop',
             props: true
         },
-        {path: '/storeLocator', component: StoreLocator},
+        // {path: '/storeLocator', component: StoreLocator},
         {path: '/cart', component: Cart, name:'cart'},
         {path: '/checkout', component: Checkout, name:'checkout'},
         {path: '/shopsList', component: ShopsList},

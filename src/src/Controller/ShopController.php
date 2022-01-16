@@ -115,4 +115,21 @@ class ShopController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
+    /**
+     * @Rest\Get("/getShops", name="getShops")
+     * @param ShopRepository $shopRepository
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
+     */
+    public function getShops(
+        ShopRepository $shopRepository,
+        SerializerInterface $serializer
+    ): JsonResponse
+    {
+        $shops = $shopRepository->findAll();
+
+        $data = $serializer->serialize($shops, JsonEncoder::FORMAT, ['groups' => 'shop_info']);
+
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
 }

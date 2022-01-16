@@ -1,7 +1,6 @@
 <template>
-  <h1>
-    navbar serwis
-  </h1>
+  <the-service-navbar></the-service-navbar>
+
   <div class="container">
     <router-view></router-view>
 
@@ -10,8 +9,10 @@
 </template>
 
 <script>
+import TheServiceNavbar from "./components/layout/TheServiceNavbar";
 export default {
   name: "AppService",
+  components: {TheServiceNavbar},
   methods: {
     //TODO jaki sklep, jaka funkcja
     async downloadEmployeeInfo() {

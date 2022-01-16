@@ -9,11 +9,11 @@ export default {
             lastFetch: null,
             shopDatesAvailabilities: [],
             shops: {
-                "type": "FeatureCollection",
+                // "type": "FeatureCollection",
                 "features": [{
-                    "type": "Feature",
+                    // "type": "Feature",
                     "geometry": {
-                        "type": "Point",
+                        // "type": "Point",
                         "coordinates": [
                             4.892951,
                             52.373564
@@ -152,6 +152,7 @@ export default {
                     }
                 ]
             },
+            // shops: {}
         };
     },
     mutations,
