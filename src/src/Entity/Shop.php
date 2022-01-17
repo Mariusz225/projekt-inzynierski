@@ -17,6 +17,7 @@ class Shop
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"shop_info"})
      * @Groups({"cart_items"})
      */
     private $id;

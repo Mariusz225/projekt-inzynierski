@@ -41,8 +41,9 @@ export default {
 
         for (const key in responseData) {
             const shop = {
-                id: responseData[key].coordinates,
-                date: responseData[key].address,
+                id: responseData[key].id,
+                coordinates: responseData[key].coordinates,
+                address: responseData[key].address,
             }
             shops.push(shop);
         }
