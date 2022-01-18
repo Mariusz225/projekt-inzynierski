@@ -2,15 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\DateAvailability;
 use App\Entity\Order;
 use App\Entity\OrderItem;
-use App\Entity\Status;
 use App\Repository\DateAvailabilityRepository;
 use App\Repository\OrderItemRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductsInShopRepository;
-use App\Repository\ShopRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -31,64 +27,47 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class CartController extends AbstractController
 {
-    /**
-     * @var Status|null
-     */
-    private ?Status $cartStatus;
-    /**
-     * @var mixed
-     */
-    private $cartId;
+    private Order $cart;
 
     public function __construct(
         SessionInterface $session,
-        Security $security,
         ManagerRegistry $doctrine,
-        StatusRepository $statusRepository
+        StatusRepository $statusRepository,
+        OrderRepository $orderRepository
     )
     {
-        $this->cartStatus = $statusRepository->findOneBy([
+        $cartStatus = $statusRepository->findOneBy([
             'name' => 'cart'
         ]);
 
         $isSessionCart = $session->has('cart');
-        if (!$security->getUser() && !$isSessionCart) {
+
+
+        if (!$isSessionCart) {
             $cart = new Order();
-            $cart->setStatus($this->cartStatus);
+            $this->cart = $cart;
+            $cart->setStatus($cartStatus);
             $entityManager = $doctrine->getManager();
             $entityManager->persist($cart);
             $entityManager->flush();
 
-            $this->cartId = $session->set('cart', $cart->getId());
-        } elseif (!$security->getUser() && $isSessionCart) {
-            $this->cartId = $session->get('cart');
+            $session->set('cart', $cart->getId());
+        } else {
+            $cartId = $session->get('cart');
+            $cart = $orderRepository->find($cartId);
         }
-        else {
-            if ($security->getUser()->getOrders()) {
-                $cart = new Order();
-                $cart->setStatus($this->cartStatus);
-                $entityManager = $doctrine->getManager();
-                $entityManager->persist($cart);
-                $entityManager->flush();
-            } else {
-                $cart = $this->getUser()->getOrders();
-            }
-            $this->cartId = $session->set('cart', $cart->getId());
-        }
+
+        $this->cart = $cart;
     }
 
     /**
      * @Rest\Post("/updateCart")
      */
     public function updateCart(
-        OrderRepository $orderRepository,
-        StatusRepository $statusRepository,
         SerializerInterface $serializer,
-        ShopRepository $shopRepository,
         Request $request,
         OrderItemRepository $orderItemRepository,
-        ProductsInShopRepository $productsInShopRepository,
-        SessionInterface $session
+        ProductsInShopRepository $productsInShopRepository
     ): JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
@@ -96,31 +75,10 @@ class CartController extends AbstractController
         $productId = $postData['productId'];
         $quantity = $postData['quantity'];
 
-        $cart = $orderRepository->findOneBy([
-            'id' => $this->cartId,
-            'status' => $this->cartStatus
-        ]);
+        $cart = $this->cart;
 
         $productInShop = $productsInShopRepository->find($productId);
         $price = $productInShop->getPrice();
-
-
-
-//        if (!$cart->getShop()) {
-//            $cart->setShop($productInShop->getShop());
-//        } elseif ($cart->getShop() !== $productInShop->getShop()) {
-//
-//
-//            $session->remove('cart');
-////            $cart->setShop(null);
-////            $em->persist($cart);
-//            $em->remove($cart);
-////            $em->remove($cart);
-//            $em->flush();
-//
-//            $data = $serializer->serialize(array('message' => 'badViewedShop'), JsonEncoder::FORMAT);
-//            return new JsonResponse($data, Response::HTTP_OK, [], true);
-//        }
 
         $orderItem = $orderItemRepository->findOneBy([
             'oneOrder' => $cart,
@@ -130,11 +88,9 @@ class CartController extends AbstractController
         if ($quantity === 0) {
             $cart->removeOrderItem($orderItem);
             $em->remove($orderItem);
-//            $em->persist($cart);
             $em->flush();
 
             if ($cart->getOrderItems()->isEmpty()) {
-//                var_dump('sss');
                 $cart->setShop(null);
                 $em->persist($cart);
                 $em->flush();
@@ -145,25 +101,12 @@ class CartController extends AbstractController
             return new JsonResponse('true', Response::HTTP_OK, [], true);
         }
 
-
-
         if (!$cart->getShop()) {
             $cart->setShop($productInShop->getShop());
         } elseif ($cart->getShop() !== $productInShop->getShop()) {
-
-
-//            $session->remove('cart');
-////            $cart->setShop(null);
-////            $em->persist($cart);
-//            $em->remove($cart);
-////            $em->remove($cart);
-//            $em->flush();
-
             $data = $serializer->serialize(array('message' => 'badViewedShop'), JsonEncoder::FORMAT);
             return new JsonResponse($data, Response::HTTP_OK, [], true);
         }
-
-
 
         if (!$orderItem) {
             $orderItem = new OrderItem();
@@ -181,8 +124,6 @@ class CartController extends AbstractController
         $em->persist($orderItem);
         $em->flush();
 
-
-
         return new JsonResponse('true', Response::HTTP_OK, [], true);
     }
 
@@ -190,28 +131,18 @@ class CartController extends AbstractController
      * @Rest\Get("/downloadCart")
      */
     public function downloadCart(
-        OrderRepository $orderRepository,
         SerializerInterface $serializer
     ): JsonResponse
     {
-        $cart = $orderRepository->findOneBy([
-            'id' => $this->cartId,
-            'status' => $this->cartStatus
-        ]);
+        $cart = $this->cart;
+
+        if ($cart->getOrderItems()->isEmpty()) {
+            return new JsonResponse('empty');
+        }
 
         $cartItems = $cart->getOrderItems();
 
-
-//        foreach ($cartItems as $cartItem) {
-//            var_dump($cartItem->getId());
-//        }
-//        var_dump($this->cartStatus);
-
-
         $data = $serializer->serialize($cartItems, JsonEncoder::FORMAT, ['groups' => 'cart_items']);
-
-//        var_dump($data);
-
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
@@ -222,26 +153,16 @@ class CartController extends AbstractController
      */
     public function submitOrder(
         Request $request,
-        OrderRepository $orderRepository,
-        SerializerInterface $serializer,
         DateAvailabilityRepository $dateAvailabilityRepository,
         EntityManagerInterface $entityManager,
         StatusRepository $statusRepository
     ): JsonResponse
     {
-        $cart = $orderRepository->findOneBy([
-            'id' => $this->cartId,
-            'status' => $this->cartStatus
-        ]);
+        $cart = $this->cart;
 
         $postData = json_decode($request->getContent(), true);
         $shippingAddressInputs = $postData['shippingAddressInputs'];
         $deliveryDateId = $postData['deliveryDateId'];
-
-//        var_dump($shippingAddressInputs);
-//        var_dump($shippingAddressInputs['name']);
-//        var_dump($deliveryDateId);
-
 
         $cart->setName($shippingAddressInputs['name']);
         $cart->setSurname($shippingAddressInputs['surname']);
@@ -253,8 +174,6 @@ class CartController extends AbstractController
 
         $date = $dateAvailabilityRepository->find($deliveryDateId);
 
-//        var_dump($date->getDate());
-
         $statusOrdered = $statusRepository->findOneBy([
             'name' => 'ordered'
         ]);
@@ -264,7 +183,6 @@ class CartController extends AbstractController
 
         $entityManager->persist($cart);
         $entityManager->flush();
-
 
         return new JsonResponse('true', Response::HTTP_OK, [], true);
     }

@@ -2,7 +2,6 @@ import {createRouter, createWebHistory} from "vue-router";
 
 import ShopsList from './pages/shop/ShopsList';
 import LandingPage from './pages/landingPage/LandingPage';
-// import ProductsList from './pages/shop/ProductsList';
 import ProductsList from "./pages/products/ProductsList";
 import StoreLocator from './pages/shop/StoreLocator';
 import Cart from './pages/order/Cart';
@@ -21,6 +20,8 @@ const router = createRouter({
     routes: [
         // {path: '/', redirect: to => 'shop'},
         {path: '/', component: LandingPage,},
+        //TODO
+        // {path: '/shop', component: shop,},
         {
             path: '/shop/:shopId',
             component: ProductsList,

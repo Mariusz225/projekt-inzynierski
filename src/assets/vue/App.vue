@@ -18,18 +18,9 @@ export default {
       return this.$route.name === 'landingPage'
     },
     isCart() {
-      // console.log(this.$store.getters['cart/isCart'])
       return this.$store.getters['cart/isCart']
     },
     badViewedShop() {
-      // console.log(this.$store.getters['cart/getShopId'])
-      // console.log(this.$route.params.shopId);
-      // console.log(String(this.$store.getters['cart/getShopId']) === this.$route.params.shopId)
-
-
-      // return (String(this.$store.getters['cart/getShopId']) !== this.$route.params.shopId);
-
-      // console.log(this.$store.getters['cart/badViewedShop'])
       return this.$store.getters['cart/badViewedShop']
     }
   },
