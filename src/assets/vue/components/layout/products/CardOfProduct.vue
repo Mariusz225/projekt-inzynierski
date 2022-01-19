@@ -13,7 +13,7 @@
       <button class="btn btn-primary btn-sm col-4" @click="decrement">
         -
       </button>
-      <input name="quantity" class="col-4" v-model="quantity" min="0" type="number">
+      <input name="quantity" class="col-4" v-model="quantity" @keydown="checkIfInteger($event)" min="0" step="any" type="number">
       <button class="btn btn-primary btn-sm col-4" @click="increment">
         +
       </button>
@@ -100,6 +100,11 @@ export default {
       }
       this.quantity -= 1;
       this.updateCart(this.quantity)
+    },
+    checkIfInteger(e) {
+      if (/^\W$/.test(e.key)) {
+        e.preventDefault();
+      }
     },
     quantityInCart() {
       // console.log(this.$store.getters['cart/getCartItemById'](this.id))

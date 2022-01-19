@@ -1,7 +1,4 @@
 <template>
-<!--  <div v-for="xd in cartValue">-->
-<!--    <h1>{{ xd.quantity }}</h1>-->
-<!--  </div>-->
   <div class="container-lg">
     <div class="row">
       <div class="col-lg-8">
@@ -102,11 +99,8 @@ export default {
       return this.$store.getters['cart/cartItems']
     },
     cartTotal() {
-      return this.$store.getters['cart/cartTotal']
+      return this.$store.getters['cart/cartTotal'].toFixed(2)
     },
-    totalForProduct() {
-      return
-    }
   }
 }
 </script>

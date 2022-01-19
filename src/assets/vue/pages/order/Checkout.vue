@@ -8,16 +8,16 @@
         </h4>
         <ul class="list-group mb-3 col-auto">
 
-          <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <li class="list-group-item d-flex justify-content-between lh-condensed"  v-for="productInCart in cartValue">
             <div>
-              <h6 class="my-0">2 x 4</h6>
+              <h6 class="my-0">{{ productInCart.quantity }} x {{ productInCart.product.name }}</h6>
             </div>
-            <span class="text-muted">{{ 2*3 }}zł</span>
+            <span class="text-muted">{{ (productInCart.quantity*productInCart.price).toFixed(2) }}zł</span>
           </li>
 
           <li class="list-group-item d-flex justify-content-between">
             <strong>Suma</strong>
-            <strong id="costForProducts"></strong>
+            <strong id="costForProducts">{{cartTotal}} zł</strong>
           </li>
         </ul>
 
@@ -116,11 +116,14 @@ export default {
       deliveryDateId: null
     }
   },
-  // computed: {
-  //   deliveryDateId() {
-  //     return null;
-  //   }
-  // },
+  computed: {
+    cartValue() {
+      return this.$store.getters['cart/cartItems']
+    },
+    cartTotal() {
+      return this.$store.getters['cart/cartTotal'].toFixed(2)
+    },
+  },
   methods: {
     setStep(step) {
       this.step = step

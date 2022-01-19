@@ -36,6 +36,11 @@ class Product
      */
     private $name;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Firm::class, inversedBy="products")
+     */
+    private $firm;
+
     public function __construct()
     {
         $this->productsInShops = new ArrayCollection();
@@ -96,6 +101,18 @@ class Product
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getFirm(): ?Firm
+    {
+        return $this->firm;
+    }
+
+    public function setFirm(?Firm $firm): self
+    {
+        $this->firm = $firm;
 
         return $this;
     }
