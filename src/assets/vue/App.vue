@@ -2,6 +2,7 @@
   <the-navbar :isCart="isCart"></the-navbar>
 <!--  <change-viewed-shop :viewedShopId="viewedShopId"></change-viewed-shop>-->
   <div v-if="badViewedShop">TODO: nie można dodać z innego sklepu</div>
+<!--  {{userHasCartInOtherShop}}-->
   <router-view></router-view>
 
 </template>
@@ -20,6 +21,11 @@ export default {
     isCart() {
       return this.$store.getters['cart/isCart']
     },
+    //TODO ID sklepu gdzie jest koszyk
+    userHasCartInOtherShop() {
+
+      console.log(this.$store.getters['cart/getShopId']);
+    },
     badViewedShop() {
       return this.$store.getters['cart/badViewedShop']
     }
@@ -36,7 +42,6 @@ export default {
   },
   created() {
     this.downloadCartItems();
-
   }
 }
 </script>
