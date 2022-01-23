@@ -2,7 +2,7 @@
   <!--Section: Block Content-->
   <!--  <section>-->
   <div className="container-lg" v-if="productsAreLoaded">
-    <div v-if="userHasCartInOtherShop === true">
+    <div v-if="userHasCartInShop === true">
       <div className="row">
 
         <!-- Grid column -->
@@ -23,7 +23,9 @@
 
     </div>
     <div v-else>
-      masz koszyk w innym sklepie
+      <user-has-cart-in-other-shop
+          :shopId="viewedShop"
+      ></user-has-cart-in-other-shop>
     </div>
 
 
@@ -37,12 +39,13 @@
 
 <script>
 import CardOfProduct from "../../components/layout/products/CardOfProduct";
+import UserHasCartInOtherShop from "../../components/layout/products/UserHasCartInOtherShop";
 export default {
-  components: {CardOfProduct},
+  components: {UserHasCartInOtherShop, CardOfProduct},
   props: ['shopId'],
   data() {
     return {
-      productsAreLoaded: false
+      productsAreLoaded: true
     }
   },
   computed: {
@@ -69,21 +72,20 @@ export default {
     //   return this.$store.getters['cart/getCartItemById(1)']
     // },
     viewedShop() {
-      // console.log(this.$store.getters['cart/getShopId'])
-      // console.log(this.shopId)
       return this.$store.getters['cart/getShopId']
     },
-    userHasCartInOtherShop() {
-      // console.log(this.$store.getters['cart/getShopId']);
+    userHasCartInShop() {
+      console.log(this.$store.getters['cart/getShopId'])
       if (this.$store.getters['cart/getShopId'] !== undefined) {
-        console.log(parseInt(this.shopId) === this.$store.getters['cart/getShopId'])
         return parseInt(this.shopId) === this.$store.getters['cart/getShopId']
+      } else if (this.$store.getters['cart/getShopId'] === undefined) {
+        return true;
       }
+
     },
   },
   methods: {
     async loadProducts() {
-
       try {
         await this.$store.dispatch('products/loadProducts', {
           shopId: this.shopId

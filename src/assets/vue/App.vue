@@ -21,11 +21,11 @@ export default {
     isCart() {
       return this.$store.getters['cart/isCart']
     },
-    //TODO ID sklepu gdzie jest koszyk
-    userHasCartInOtherShop() {
-
-      console.log(this.$store.getters['cart/getShopId']);
-    },
+    // //TODO ID sklepu gdzie jest koszyk
+    // userHasCartInOtherShop() {
+    //
+    //   console.log(this.$store.getters['cart/getShopId']);
+    // },
     badViewedShop() {
       return this.$store.getters['cart/badViewedShop']
     }
