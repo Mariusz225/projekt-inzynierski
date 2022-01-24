@@ -186,4 +186,27 @@ class CartController extends AbstractController
 
         return new JsonResponse('true', Response::HTTP_OK, [], true);
     }
+
+    /**
+     * @Rest\Get("/removeShopFromCart")
+     */
+    public function removeShopFromCart(
+        SerializerInterface $serializer,
+        EntityManagerInterface $entityManager
+    ): JsonResponse
+    {
+        $cart = $this->cart;
+
+        $cart->setShop(null);
+        $orderItems = $cart->getOrderItems();
+
+        foreach ($orderItems as $orderItem) {
+            $entityManager->remove($orderItem);
+        }
+
+        $entityManager->persist($cart);
+        $entityManager->flush();
+
+        return new JsonResponse(true);
+    }
 }

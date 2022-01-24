@@ -21,7 +21,7 @@
               <quantity-management
                   :id="productInCart.productId"
                   :quantity-value="productInCart.quantity"
-                  :product="productInCart"
+                  :product="productInCart.product"
               ></quantity-management>
 
             </div>

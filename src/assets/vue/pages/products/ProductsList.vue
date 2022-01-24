@@ -76,6 +76,9 @@ export default {
     },
     userHasCartInShop() {
       console.log(this.$store.getters['cart/getShopId'])
+      if (this.$store.getters['cart/getShopId'] === null) {
+        return true
+      }
       if (this.$store.getters['cart/getShopId'] !== undefined) {
         return parseInt(this.shopId) === this.$store.getters['cart/getShopId']
       } else if (this.$store.getters['cart/getShopId'] === undefined) {

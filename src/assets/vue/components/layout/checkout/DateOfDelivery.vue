@@ -27,9 +27,10 @@
     <h5>Wybierz datę dostawy</h5>
     <div v-for="date in dates">
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="dateDelivery" :id="date.id" :value="date.id" v-model="dateId" @change="updatePickedDateId" />
-        <label class="form-check-label" :for="date.id">
+        <input class="form-check-input" type="radio" name="dateDelivery" :id="date.date" :value="date" v-model="deliveryDate" @change="updatePickedDate" />
+        <label class="form-check-label" :for="date.date">
           {{ date.date }}
+<!--          {{ new Date() }}-->
         </label>
       </div>
     </div>
@@ -53,7 +54,7 @@ export default {
   emits: ['set-step', 'set-date-id'],
   data() {
     return {
-      dateId: null
+      deliveryDate: null
     };
   },
   computed: {
@@ -62,9 +63,9 @@ export default {
       // console.log(this.dateId)
       return this.$store.getters['shops/getShopDatesAvailabilities'];
     },
-    picked() {
-      console.log()
-    }
+    // picked() {
+    //   console.log()
+    // }
   },
   methods: {
     goBackToShippingAddresses() {
@@ -79,8 +80,8 @@ export default {
       } catch (error) {
       }
     },
-    updatePickedDateId() {
-      this.$emit('set-date-id', this.dateId)
+    updatePickedDate() {
+      this.$emit('set-date-id', this.deliveryDate)
     }
   },
   created() {

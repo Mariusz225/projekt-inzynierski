@@ -35,8 +35,14 @@ export default {
   },
   props:['shopId'],
   methods: {
-    removeCartAndReload() {
-      this.$router.go(null);
+    async removeCartAndReload() {
+      try {
+        await this.$store.dispatch('cart/removeCart')
+      } catch (error) {
+
+      }
+      // this.$router.go(null);
+
     }
   },
 }

@@ -9,23 +9,29 @@
           className="fas fa-shopping-cart pr-2"></i>Dodaj do koszyka
       </button>
     </div>
-    <div v-else class="row m-0 mb-2">
-      <button class="btn btn-primary btn-sm col-4" @click="decrement">
-        -
-      </button>
-      <input name="quantity" class="col-4" v-model="quantity" @keydown="checkIfInteger($event)" min="0" step="any" type="number">
-      <button class="btn btn-primary btn-sm col-4" @click="increment">
-        +
-      </button>
-    </div>
+    <quantity-management
+        v-else
+        :id="id"
+        :quantity-value="quantity"
+        :product="product"
+    ></quantity-management>
+<!--    <div v-else class="row m-0 mb-2">-->
+<!--      <button class="btn btn-primary btn-sm col-4" @click="decrement">-->
+<!--        - -->
+<!--      </button>-->
+<!--      <input name="quantity" class="col-4" v-model="quantity" @keydown="checkIfInteger($event)" @keyup="updateCart(quantity)" :min="0" step="any" type="number">-->
+<!--      <button class="btn btn-primary btn-sm col-4" @click="increment">-->
+<!--        +-->
+<!--      </button>-->
+<!--    </div>-->
 
 
 
 
     <div className="text-center pt-1">
 
-      <h5>[Company of Product]</h5>
-      <p className="mb-2 text-muted text-uppercase small">{{ name }}</p>
+      <h5>{{ name }}</h5>
+<!--      <p className="mb-2 text-muted text-uppercase small">{{ name }}</p>-->
       <hr>
       <h6 className="mb-3">{{ product.price }} zł</h6>
     </div>
@@ -37,12 +43,21 @@
 </template>
 
 <script>
+import QuantityManagement from "../cart/QuantityManagement";
 export default {
+  components: {QuantityManagement},
   props: ['id', 'name', 'product'],
   data() {
     return {
       productInfo: null,
       quantity: 0,
+    }
+  },
+  watch: {
+    quantity: function (val) {
+      if (val > 12) {
+        this.quantity = 12
+      }
     }
   },
   computed: {
@@ -83,7 +98,14 @@ export default {
   },
   methods: {
     async updateCart(quantity) {
-      this.quantity = quantity
+      // console.log(quantity)
+      if (quantity > 12) {
+        this.quantity = 12;
+      } else if (quantity === '') {
+        this.quantity = 0;
+      } else {
+        this.quantity = quantity
+      }
       this.$store.dispatch('cart/updateCart', {
         productId: this.id,
         quantity: this.quantity,
@@ -91,15 +113,22 @@ export default {
       })
     },
     increment() {
-      this.quantity += 1;
-      this.updateCart(this.quantity)
+      if (this.quantity >= 12) {
+        this.updateCart(12)
+      } else {
+        this.quantity += 1;
+        this.updateCart(this.quantity)
+      }
+
     },
     decrement() {
       if (this.quantity === 0) {
-        return
+        this.updateCart(0)
+      } else {
+        this.quantity -= 1;
+        this.updateCart(this.quantity)
       }
-      this.quantity -= 1;
-      this.updateCart(this.quantity)
+
     },
     checkIfInteger(e) {
       if (/^\W$/.test(e.key)) {

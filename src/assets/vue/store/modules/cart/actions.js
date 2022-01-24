@@ -12,7 +12,7 @@ export default {
             productId: payload.productId,
             quantity: payload.quantity,
             product: payload.product,
-            price: payload.product.price
+            price: payload.price
         }
 
         const response = await fetch(`/cartController/updateCart`,{
@@ -84,5 +84,25 @@ export default {
 
         context.commit('setCartItems', cartItems)
         context.commit('setViewedShopId', shopId)
+    },
+
+    async removeCart(context, payload) {
+        const response = await fetch(
+            `/cartController/removeShopFromCart`
+        );
+
+        const responseData = await response.json();
+        // responseData[key].productShop = undefined;
+
+        // console.log(responseData)
+
+        if (!response.ok) {
+
+        }
+
+        // console.log(shopId)
+
+        // context.commit('setCartItems', cartItems)
+        context.commit('setViewedShopId', null)
     },
 }

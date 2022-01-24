@@ -12,12 +12,19 @@ export default {
         }
         const dates = [];
 
-        console.log(responseData)
 
         for (const key in responseData) {
+
+            // var formatDate = new Date(responseData[key].date);
+            const formatDate = new Intl.DateTimeFormat('pl-PL').format(new Date(responseData[key].date));
+
+            // sqlDate.split("-");
+
+            // console.log(sqlDate[0])
+
             const date = {
                 id: responseData[key].id,
-                date: responseData[key].date,
+                date: formatDate,
             }
             dates.push(date);
         }

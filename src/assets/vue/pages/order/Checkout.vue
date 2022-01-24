@@ -49,7 +49,7 @@
         <div v-show="step===2">
           <date-of-delivery
               :shippingAddressInputs="shippingAddressInputs"
-              @set-date-id="setDateId"
+              @set-date-id="setDate"
               @set-step="setStep"
           ></date-of-delivery>
         </div>
@@ -83,8 +83,27 @@
         </div>
 
         <div v-show="step===4">
+          <div class="row">
+            <div class="col-auto">
+              <div>Miejsce dostawy: {{ shippingAddressInputs.town }} {{ shippingAddressInputs.address }}</div>
+              <div>Data dostawy: {{deliveryDate.date}}</div>
+              <div>Sposób płatności: gotówka</div>
+              <div>Całkowita kwota do zapłaty: {{ cartTotal }} zł</div>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-auto">
+              <div>
+                Jeśli złożysz zamówienie faktura zostanie wysłana na Twój adres e-mail: {{shippingAddressInputs.email}}
+              </div>
+              <div>
+                Kontunuacja oznacza zgodę naszego regulaminy.
+              </div>
+            </div>
+          </div>
           <button type="button" class="btn btn-primary btn-lg btn-block mt-3" style="width: 100%" @click="submitOrder">
-            Złóż zamówienie
+            Zamawiam i płacę
           </button>
         </div>
 
@@ -113,7 +132,7 @@ export default {
         email: '',
         phoneNumber: ''
       },
-      deliveryDateId: null
+      deliveryDate: {}
     }
   },
   computed: {
@@ -128,8 +147,9 @@ export default {
     setStep(step) {
       this.step = step
     },
-    setDateId(id) {
-      this.deliveryDateId = id;
+    setDate(date) {
+      // console.log(date)
+      this.deliveryDate = date;
     },
     async submitOrder() {
       try {
