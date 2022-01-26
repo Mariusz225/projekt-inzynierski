@@ -1,19 +1,25 @@
 <template>
-  <div class="card" v-for="order in orders">
+  <div v-if="driverWorkStatus === 'waitingForDelivery'">
+    <div class="card" v-for="order in orders">
 
-    <completing-the-order
-        :key="order.id"
-        :order="order"
-        @change-status="changeStatus"
-    ></completing-the-order>
+      <completing-the-order
+          :key="order.id"
+          :order="order"
+          @change-status="changeStatus"
+      ></completing-the-order>
+    </div>
+
+    <div id="goToOrders" class="card-footer text-muted fixed-bottom m-4" v-if="numberOfAllOrders">
+      <div v-if="allOrdersAreCompleted">
+        <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="setOrderAsSent">Idź do dostawy</button>
+      </div>
+      <button type="button" disabled class="btn btn-primary btn-lg btn-block" style="width: 100%" v-else>Idź do dostawy</button>
+    </div>
+
   </div>
 
-  <div id="goToOrders" class="card-footer text-muted fixed-bottom m-4" v-if="numberOfAllOrders">
-    <router-link :to="{ name: 'shopkeeper' }" v-if="allOrdersAreCompleted">
-      <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="setOrderAsSent">Idź do dostawy</button>
-    </router-link>
-    <button type="button" disabled class="btn btn-primary btn-lg btn-block" style="width: 100%" v-else>Idź do dostawy</button>
-  </div>
+
+
 </template>
 
 <script>
@@ -26,7 +32,9 @@ export default {
     return {
       // numberOfAllOrderItems: 0,
       numberOfCompletedOrders: 0,
-      allOrdersAreCompleted: false
+      allOrdersAreCompleted: false,
+      driverWorkStatus: 'waitingForDelivery',
+      // driverWorkStatus: null
 
     }
   },
@@ -59,15 +67,14 @@ export default {
       // this.numberOfCompletedOrderItems = valueOfCompletedItems
     },
     async setOrderAsSent() {
-      await this.$store.dispatch('orders/setOrderAsWaitingForDelivery', {
-        orderId: this.orderId
-      })
+      // await this.$store.dispatch('orders/setOrderAsWaitingForDelivery', {
+      //   orderId: this.orderId
+      // })
     },
   },
 
   watch: {
     numberOfCompletedOrders: function (val) {
-      // this.allOrderItemsAreCompleted = val === this.numberOfAllOrders;
       this.allOrdersAreCompleted = val === this.numberOfAllOrders;
 
     }

@@ -17,11 +17,11 @@
         </div>
 
       </div>
-      <router-link :to="{name: 'completingTheOrder', params: {orderId: order.id}}">
-        <div class="p-2">
+<!--      <router-link :to="{name: 'completingTheOrder', params: {orderId: order.id}}">-->
+        <button class="p-2 btn" @click="goToCompletingOrder">
           <font-awesome-icon :icon="['fas', 'arrow-circle-right']" class="fa-2x" style="color:green"></font-awesome-icon>
-        </div>
-      </router-link>
+        </button>
+<!--      </router-link>-->
 
     </div>
   </div>
@@ -56,16 +56,19 @@ export default {
     }
   },
   methods: {
-    // async goToCompletingOrder() {
-    //   // console.log(this.order.id)
-    //   this.orderId = parseInt(this.order.id);
-    //   await this.$store.dispatch('orders/fetchOrderInfo', {
-    //     orderId: this.orderId
-    //   })
-    //   // if (response === 'ordered') {
-    //   //   console.log('nie da rady')
-    //   // }
-    // },
+    async goToCompletingOrder() {
+      // console.log(this.order.id)
+      this.orderId = parseInt(this.order.id);
+      var response = await this.$store.dispatch('orders/fetchOrderInfo', {
+        orderId: this.orderId
+      })
+      console.log(response)
+      if (response === 'cart') {
+        console.log('nie da rady')
+      } else {
+        console.log('sss')
+      }
+    },
   }
 }
 </script>

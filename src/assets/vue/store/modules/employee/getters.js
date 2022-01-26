@@ -1,5 +1,5 @@
 export default {
-    // userId(state) {
-    //     return state.userId;
-    // }
+    getStartedOrder(state) {
+        return state.employeeStartedOrderId;
+    }
 };

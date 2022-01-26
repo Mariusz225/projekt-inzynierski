@@ -1,6 +1,7 @@
 export default {
 
     async getOrdersFromTheStore(context, payload) {
+        // await this.checkIfShopkeeperHasStartedOrder();
         const response = await fetch(`/employeeController/getOrdersFromTheStore/${payload.shopId}`, {
             method: 'GET',
         });
@@ -8,11 +9,11 @@ export default {
         const responseData = await response.json();
 
         if (!response.ok) {
-            console.log(responseData);
+            // console.log(responseData);
             throw new Error(responseData.message || 'Failed to authenticate. Check your login data.');
         }
 
-        console.log(responseData);
+        // console.log(responseData);
 
         const orders = [];
 
@@ -90,7 +91,7 @@ export default {
 
 
         if (!response.ok) {
-            console.log(responseData);
+            // console.log(responseData);
             throw new Error(responseData.message || 'Failed to authenticate. Check your login data.');
         }
 
@@ -106,6 +107,23 @@ export default {
         if (!response.ok) {
             // error ...
         }
+    },
+
+    async checkIfShopkeeperHasStartedOrder(context, payload) {
+        const response = await fetch(`/employeeController/checkIfShopkeeperHasStartedOrder`, {
+            method: 'GET',
+        });
+
+        const responseData = await response.json();
+
+        console.log(responseData);
+
+        if (!response.ok) {
+            // console.log(responseData);
+            throw new Error(responseData.message || 'Failed to authenticate. Check your login data.');
+        }
+
+        context.commit('setEmployeeHasStartedOrder', responseData);
     },
 
     async submitOrder(context, payload) {

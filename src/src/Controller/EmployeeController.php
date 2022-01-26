@@ -41,7 +41,6 @@ class EmployeeController extends AbstractController
         $this->employee = $employeeRepository->findOneBy([
             'user' => $user
         ]);
-//        var_dump($employee->getId());
     }
     /**
      * @Rest\Get("/getEmployeeInfo")
@@ -80,23 +79,18 @@ class EmployeeController extends AbstractController
         SerializerInterface $serializer
     ): JsonResponse
     {
-        //TODO role ?
         $userHasAccess = false;
 
         $shop = $shopRepository->find($id);
 
-//        foreach ($this->employee as $item) {
-//            $item->getShop($shopRepository->findOneBy(['id' => $id]));
-//            if ($item->getShop() === $shop) {
-//                $userHasAccess = true;
-//                break;
-//            }
-//        }
+        $roles = $this->employee->getRole();
 
-        if ($this->employee->getShop() === $shop) {
-            $userHasAccess = true;
+        foreach ($roles as $role) {
+            if ($role === 'ROLE_SHOPKEEPER' && $this->employee->getShop() === $shop) {
+                $userHasAccess = true;
+                break;
+            }
         }
-
 
         if ($userHasAccess) {
             $orders = $shop->getOrders()->filter(function (Order $order) {
@@ -107,7 +101,7 @@ class EmployeeController extends AbstractController
 
             return new JsonResponse($data, Response::HTTP_OK, [], true);
         }
-        return new JsonResponse(false);
+        return new JsonResponse('hasNotPermission');
     }
 
     /**
@@ -137,6 +131,53 @@ class EmployeeController extends AbstractController
 
             return new JsonResponse($data, Response::HTTP_OK, [], true);
         }
+        return new JsonResponse(false);
+    }
+
+    /**
+     * @Rest\Get ("/getOrdersStatus", name="getOrdersStatus")
+     */
+    public function getOrdersStatus(
+    ): JsonResponse
+    {
+        $orders = $this->employee->getOrders()->filter(function (Order $order) {
+            return $order->getStatus()->getName() === 'delivery';
+        });
+
+        if (!$orders->isEmpty()) {
+            return new JsonResponse('delivery');
+        } else {
+            return new JsonResponse('waitingForDelivery');
+        }
+    }
+
+    /**
+     * @Rest\Get ("/checkIfShopkeeperHasStartedOrder", name="checkIfShopkeeperHasStartedOrder")
+     */
+    public function checkIfShopkeeperHasStartedOrder(
+        OrderRepository $orderRepository,
+        StatusRepository $statusRepository
+    ): JsonResponse
+    {
+
+        $employeeHasStartedAnotherOrder = $this->employee->getOrders()->filter(function (Order $order) {
+            return (
+                $order->getStatus()->getName() === 'completed'
+            );
+        });
+
+        if (!$employeeHasStartedAnotherOrder->isEmpty()) {
+            $order = $orderRepository->findOneBy([
+                'employee' => $this->employee,
+                'status' => $statusRepository->findOneBy([
+                    'name' => 'completed'
+                ])
+            ]);
+            return new JsonResponse($order->getId());
+        }
+
+
+
         return new JsonResponse(false);
     }
 
@@ -184,15 +225,10 @@ class EmployeeController extends AbstractController
     public function setCompletingEmployee(
         int $id,
         OrderRepository $orderRepository,
-        SerializerInterface $serializer,
-        OrderItemRepository $orderItemRepository,
         StatusRepository $statusRepository,
         EntityManagerInterface $entityManager
     ): JsonResponse
     {
-//        $order = $orderRepository->find($id);
-
-//        $user = $order->getUser();
 
         $employeeHasStartedAnotherOrder = $this->employee->getOrders()->filter(function (Order $order) use ($id) {
             return (
@@ -201,10 +237,9 @@ class EmployeeController extends AbstractController
             );
         });
 
-//        var_dump($employeeHasStartedAnotherOrder);
 
         if (!$employeeHasStartedAnotherOrder->isEmpty()) {
-            return new JsonResponse(false);
+            return new JsonResponse('userHasStartedAnotherOrder');
         } else {
             $order = $orderRepository->find($id);
             $statusCompleted = $statusRepository->findOneBy([
@@ -219,21 +254,6 @@ class EmployeeController extends AbstractController
 
             return new JsonResponse(true);
         }
-
-//        if ($this->employee->getOrders()->filter() && $this->employee->getShop()->getOrders()) {
-//
-//        }
-//
-//        if ($user === $this->employee) {
-//            return new JsonResponse(true);
-//        } elseif ($user === null) {
-//            $userHasStartedOrder =
-//            //            $order->setStatus('completed');
-//            $order->setUser($user);
-//            return new JsonResponse(true);
-//        } else {
-//            return new JsonResponse(false);
-//        }
     }
 
 

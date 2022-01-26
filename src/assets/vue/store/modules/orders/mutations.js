@@ -11,6 +11,7 @@ export default {
 
     },
     setOrderInfo(state, payload) {
+        // state.orderInfo = payload;
         console.log(payload)
     }
 };
