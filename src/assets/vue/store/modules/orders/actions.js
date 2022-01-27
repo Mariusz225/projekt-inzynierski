@@ -109,6 +109,16 @@ export default {
         }
     },
 
+    async setOrdersAsDelivery(context, payload) {
+        const response = await fetch(`/employeeController/setOrderAsDelivery`, {
+            method: 'PUT',
+        });
+
+        if (!response.ok) {
+            // error ...
+        }
+    },
+
     async checkIfShopkeeperHasStartedOrder(context, payload) {
         const response = await fetch(`/employeeController/checkIfShopkeeperHasStartedOrder`, {
             method: 'GET',

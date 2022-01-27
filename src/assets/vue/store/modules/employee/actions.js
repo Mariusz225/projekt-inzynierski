@@ -37,4 +37,21 @@ export default {
 
         context.commit('setEmployeeHasStartedOrder', responseData);
     },
+
+    async checkIfDriverHasStartedDelivery(context, payload) {
+        const response = await fetch(`/employeeController/checkIfDriverHasStartedDelivery`, {
+            method: 'GET',
+        });
+
+        const responseData = await response.json();
+
+        console.log(responseData);
+
+        if (!response.ok) {
+            // console.log(responseData);
+            throw new Error(responseData.message || 'Failed to authenticate. Check your login data.');
+        }
+
+        context.commit('setDriverHasStartedDelivery', responseData);
+    },
 };

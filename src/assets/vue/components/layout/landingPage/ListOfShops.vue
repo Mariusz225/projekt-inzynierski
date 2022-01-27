@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="align-items-end mt-auto mb-2" v-if="chosenShop !== null">
-            <router-link :to="{ name: 'shop', params: {shopId: chosenShop} }">
+            <router-link :to="{ name: 'shop', params: {shopId: this.chosenShop} }">
               <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%">
                 Przejdź do sklepu
 

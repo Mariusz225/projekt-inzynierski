@@ -6,5 +6,8 @@ export default {
     },
     setEmployeeHasStartedOrder(state, payload) {
         state.employeeStartedOrderId = payload;
-    }
+    },
+    setDriverHasStartedDelivery(state, payload) {
+        state.driverHasStartedOrder = payload;
+    },
 };

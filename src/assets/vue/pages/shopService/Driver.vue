@@ -1,5 +1,5 @@
 <template>
-  <div v-if="driverWorkStatus === 'waitingForDelivery'">
+  <div v-if="!driverHasStartedDelivery">
     <div class="card" v-for="order in orders">
 
       <completing-the-order
@@ -11,7 +11,7 @@
 
     <div id="goToOrders" class="card-footer text-muted fixed-bottom m-4" v-if="numberOfAllOrders">
       <div v-if="allOrdersAreCompleted">
-        <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="setOrderAsSent">Idź do dostawy</button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="goToDelivery">Idź do dostawy</button>
       </div>
       <button type="button" disabled class="btn btn-primary btn-lg btn-block" style="width: 100%" v-else>Idź do dostawy</button>
     </div>
@@ -19,11 +19,20 @@
   </div>
 
 
+  <div v-else>
+    <div class="card" v-for="order in orders">
+      <order>
+
+      </order>
+    </div>
+  </div>
+
+
 
 </template>
 
 <script>
-import Order from "../../components/layout/employee/shopkeeper/Order";
+import Order from "../../components/layout/employee/driver/Order";
 import CompletingTheOrder from "../../components/layout/employee/driver/CompletingTheOrder";
 export default {
   components: {CompletingTheOrder, Order},
@@ -33,7 +42,7 @@ export default {
       // numberOfAllOrderItems: 0,
       numberOfCompletedOrders: 0,
       allOrdersAreCompleted: false,
-      driverWorkStatus: 'waitingForDelivery',
+      // driverWorkStatus: 'waitingForDelivery',
       // driverWorkStatus: null
 
     }
@@ -47,10 +56,14 @@ export default {
       // console.log(this.$store.getters['orders/getOrderItems'].length)
       return this.$store.getters['orders/getOrders'].length
     },
+    driverHasStartedDelivery() {
+      return this.$store.getters['employee/checkIfDriverHasStartedOrder'];
+    }
   },
 
   methods: {
     async loadOrders() {
+      // console.log('ss')
       try {
         await this.$store.dispatch('orders/getDriverOrdersInShop', {
           shopId: this.shopId
@@ -66,10 +79,18 @@ export default {
       }
       // this.numberOfCompletedOrderItems = valueOfCompletedItems
     },
-    async setOrderAsSent() {
-      // await this.$store.dispatch('orders/setOrderAsWaitingForDelivery', {
-      //   orderId: this.orderId
-      // })
+    async goToDelivery() {
+      await this.$store.dispatch('orders/setOrdersAsDelivery', {
+        // orderId: this.orderId
+      })
+    },
+    async checkIfDriverHasStartedDelivery() {
+      try {
+        await this.$store.dispatch('employee/checkIfDriverHasStartedDelivery', {
+          shopId: this.shopId
+        })
+      } catch (error) {
+      }
     },
   },
 
@@ -80,6 +101,7 @@ export default {
     }
   },
   created() {
+    this.checkIfDriverHasStartedDelivery();
     this.loadOrders();
   }
 }

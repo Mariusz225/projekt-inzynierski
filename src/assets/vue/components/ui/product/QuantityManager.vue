@@ -1,13 +1,4 @@
 <template>
-<!--  <div class="row m-0 mb-2">-->
-<!--    <button class="btn btn-primary btn-sm col-4" @click="decrement">-->
-<!--      - -->
-<!--    </button>-->
-<!--    <input name="quantity" class="col-4" min="0" type="number" v-model="quantity">-->
-<!--    <button class="btn btn-primary btn-sm col-4" @click="increment">-->
-<!--      +-->
-<!--    </button>-->
-<!--  </div>-->
   <div class="row m-0 mb-2">
     <button class="btn btn-primary btn-sm col-4" @click="decrement">
       -
@@ -27,12 +18,6 @@ export default {
       quantity: this.quantityValue,
     }
   },
-  computed: {
-    // quantityValue() {
-    //   console.log(this.quantity)
-    //   return this.quantity
-    // }
-  },
   watch: {
     quantity: function (val) {
       if (val > 12) {
@@ -42,7 +27,6 @@ export default {
   },
   methods: {
     async updateCart(quantity) {
-      // console.log(quantity)
       if (quantity > 12) {
         this.quantity = 12;
       } else if (quantity === '') {

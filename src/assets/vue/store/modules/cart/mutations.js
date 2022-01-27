@@ -22,7 +22,7 @@ export default {
         // console.log(payload.product)
         state.cartItems = payload;
     },
-    setViewedShopId(state, payload) {
+    setShopId(state, payload) {
         state.shopId = payload
     },
     badViewedShop(state, payload) {

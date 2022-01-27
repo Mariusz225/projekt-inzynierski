@@ -27,26 +27,9 @@ export default {
             throw new Error(responseData.message || 'Failed to send request.');
         }
 
+        context.commit('updateCart', localRequest)
+        context.commit('setShopId', payload.shopId)
 
-        // console.log(String(responseData.error))
-
-        if (String(responseData.message) === 'badViewedShop') {
-            // console.log('sss')
-            context.commit('badViewedShop', true)
-        } else if (String(responseData.message) === 'cartIsEmpty') {
-            // context.commit('badViewedShop', null)
-
-            console.log('s')
-            context.commit('updateCart', localRequest)
-
-            context.commit('removeCart');
-            // context.commit('badViewedShop', null)
-
-
-        } else {
-            context.commit('badViewedShop', false)
-            context.commit('updateCart', localRequest)
-        }
 
     },
 
@@ -83,7 +66,7 @@ export default {
         // console.log(shopId)
 
         context.commit('setCartItems', cartItems)
-        context.commit('setViewedShopId', shopId)
+        context.commit('setShopId', shopId)
     },
 
     async removeCart(context, payload) {
@@ -103,6 +86,6 @@ export default {
         // console.log(shopId)
 
         // context.commit('setCartItems', cartItems)
-        context.commit('setViewedShopId', null)
+        context.commit('setShopId', null)
     },
 }

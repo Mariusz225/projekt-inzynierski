@@ -148,7 +148,6 @@ export default {
       this.step = step
     },
     setDate(date) {
-      // console.log(date)
       this.deliveryDate = date;
     },
     async submitOrder() {

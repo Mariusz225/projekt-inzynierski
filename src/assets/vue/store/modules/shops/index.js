@@ -8,7 +8,7 @@ export default {
         return {
             lastFetch: null,
             shopDatesAvailabilities: [],
-            // shops: {
+            // shop: {
             //     // "type": "FeatureCollection",
             //     "features": [{
             //         // "type": "Feature",

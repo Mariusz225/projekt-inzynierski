@@ -4,7 +4,7 @@ import router from './router';
 import store from "./store";
 import App from './App';
 import AppService from './AppService';
-import BaseCard from './components/ui/BaseCard';
+// import BaseCard from './components/ui/BaseCard';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faUserSecret, faExclamation, faArrowCircleRight, faCheckCircle as fasCheckCircle, faEdit } from '@fortawesome/free-solid-svg-icons'
@@ -23,7 +23,7 @@ app.use(store);
 
 
 app.component('font-awesome-icon', FontAwesomeIcon);
-app.component('base-card', BaseCard);
+// app.component('base-card', BaseCard);
 
 app.mount('#app');
 

@@ -59,7 +59,7 @@ export default {
   },
   computed: {
     dates() {
-      // console.log(this.$store.getters['shops/getShopDatesAvailabilities'].setHours(0,0,0,0))
+      // console.log(this.$store.getters['shop/getShopDatesAvailabilities'].setHours(0,0,0,0))
       // console.log(this.dateId)
       return this.$store.getters['shops/getShopDatesAvailabilities'];
     },

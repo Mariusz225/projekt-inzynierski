@@ -9,24 +9,12 @@
           className="fas fa-shopping-cart pr-2"></i>Dodaj do koszyka
       </button>
     </div>
-    <quantity-management
+    <quantity-manager
         v-else
         :id="id"
         :quantity-value="quantity"
         :product="product"
-    ></quantity-management>
-<!--    <div v-else class="row m-0 mb-2">-->
-<!--      <button class="btn btn-primary btn-sm col-4" @click="decrement">-->
-<!--        - -->
-<!--      </button>-->
-<!--      <input name="quantity" class="col-4" v-model="quantity" @keydown="checkIfInteger($event)" @keyup="updateCart(quantity)" :min="0" step="any" type="number">-->
-<!--      <button class="btn btn-primary btn-sm col-4" @click="increment">-->
-<!--        +-->
-<!--      </button>-->
-<!--    </div>-->
-
-
-
+    ></quantity-manager>
 
     <div className="text-center pt-1">
 
@@ -36,17 +24,14 @@
       <h6 className="mb-3">{{ product.price }} zł</h6>
     </div>
   </div>
-<!--  <div v-for="x in cart">-->
-<!--    <h1>sss</h1>-->
-<!--  </div>-->
 
 </template>
 
 <script>
-import QuantityManagement from "../cart/QuantityManagement";
+import QuantityManager from "../../ui/product/QuantityManager";
 export default {
-  components: {QuantityManagement},
-  props: ['id', 'name', 'product'],
+  components: {QuantityManager},
+  props: ['id', 'shopId', 'name', 'product'],
   data() {
     return {
       productInfo: null,
@@ -62,43 +47,15 @@ export default {
   },
   computed: {
     cartValue() {
-      // console.log(this.productsInCart[0])
-
-      // console.log(this.id)
-      // if (this.isInCart) {
-      //   console.log('sss')
-      // }
-      // console.log(this.$store.getters['cart/cartItems'])
-
-
-      // if ()
-
-
-      // console.log(this.$store.getters['cart/cartItems'][0])
-      // console.log(this.$store.getters['cart/cartItems'][1])
-      // console.log(this.$store.getters['cart/cartItems'][2])
-
-      // console.log(this.productsInCart)
-      // console.log(this.$store.getters['cart/cartItems'])
-      // console.log(this.$store.getters['cart/cartItems'][0].orderItemId)
       return this.$store.getters['cart/cartItems']
     },
     isInCart() {
-      // console.log(this.$store.getters['cart/getCartItemById'](this.id))
       let json = this.$store.getters['cart/getCartItemById'](this.id);
-      // this.quantity = 1
       return json !== undefined;
-
-
     },
-    // quantity() {
-    //   console.log(this.$store.getters['cart/getCartItemById'](this.id)) ;
-    //   return this.$store.getters['cart/getCartItemById'](this.id);
-    // }
   },
   methods: {
     async updateCart(quantity) {
-      // console.log(quantity)
       if (quantity > 12) {
         this.quantity = 12;
       } else if (quantity === '') {
@@ -108,6 +65,7 @@ export default {
       }
       this.$store.dispatch('cart/updateCart', {
         productId: this.id,
+        shopId: this.shopId,
         quantity: this.quantity,
         product: this.product,
       })
@@ -136,22 +94,16 @@ export default {
       }
     },
     quantityInCart() {
-      // console.log(this.$store.getters['cart/getCartItemById'](this.id))
       let json = this.$store.getters['cart/getCartItemById'](this.id);
-      // this.quantity = 1
-      // return json !== undefined;
       if (json) {
         return this.quantity = json.quantity
       } else {
         return false
       }
-
     },
   },
   created() {
     this.quantityInCart()
-
-
   }
 }
 </script>
