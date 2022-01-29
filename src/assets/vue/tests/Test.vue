@@ -1,4 +1,7 @@
 <template>
+  <button @click="xd">
+    gggg
+  </button>
   <form @submit.prevent="submitForm">
     <div class="form-control" :class="{invalid: userNameValidity === 'invalid'}">
       <label for="user-name">Your Name</label>
@@ -83,6 +86,41 @@ export default {
     };
   },
   methods: {
+    async xd() {
+      const response = await fetch("https://secure.snd.payu.com/api/v2_1/orders", {
+        body: {
+          // "notifyUrl": "https://your.eshop.com/notify",
+          "customerIp": "127.0.0.1",
+          "merchantPosId": "145227",
+          "description": "RTV market",
+          "currencyCode": "PLN",
+          "totalAmount": "15000",
+          "extOrderId": "w4b5uomxrdlxbe208bbbsk",
+          "buyer": {
+            "email": "john.doe@example.com",
+            "phone": "654111654",
+            "firstName": "John",
+            "lastName": "Doe"
+          },
+          "products": [
+            {
+              "name": "Wireless Mouse for Laptop",
+              "unitPrice": "15000",
+              "quantity": "1"
+            }
+          ]
+        },
+        headers: {
+        Authorization: "Bearer d9a4536e-62ba-4f60-8017-6053211d3f47",
+            "Content-Type": "application/json"
+      },
+      method: "POST"
+    });
+
+      const responseData = await response.json();
+
+      console.log(responseData);
+    },
     submitForm() {
       console.log('Username: ' + this.userName);
       this.userName = '';

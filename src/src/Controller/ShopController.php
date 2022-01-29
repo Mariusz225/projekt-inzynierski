@@ -32,8 +32,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ShopController extends AbstractController
 {
     /**
-     * @Rest\Get("/getProductsInShop/{id}")
+     * @Rest\Get("/getProductsInShop/{id}/{numberOfPagination}")
      * @param int $id
+     * @param int $numberOfPagination
      * @param ShopRepository $shopRepository
      * @param ProductsInShopRepository $productsInShopRepository
      * @param SerializerInterface $serializer
@@ -42,6 +43,7 @@ class ShopController extends AbstractController
      */
     public function index(
         int $id,
+        int $numberOfPagination,
         ShopRepository $shopRepository,
         ProductsInShopRepository $productsInShopRepository,
         SerializerInterface $serializer,
@@ -52,10 +54,16 @@ class ShopController extends AbstractController
             'id' => $id
         ]);
 
+//        $productsInShopRepository->findBy([],['id' => 'ASC'],24);
+
+        $products = $productsInShopRepository->findBy([
+            'shop' => $shopRepository->find($id),
+        ], [], 12);
 
 
-//        var_dump($shop[0]['name']);
-        $products = $shop->getProductsInShop();
+
+//        $products = $shop->getProductsInShop();
+
 
         $data = $serializer->serialize($products, JsonEncoder::FORMAT, ['groups' => 'products_in_shop']);
 

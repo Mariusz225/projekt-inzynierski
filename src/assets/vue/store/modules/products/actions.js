@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
     async loadProducts(context, payload) {
         const response = await fetch(
-            `/shopController/getProductsInShop/${payload.shopId}`
+            `/shopController/getProductsInShop/${payload.shopId}/${payload.numberOfPagination}`
         );
 
         const responseData = await response.json();

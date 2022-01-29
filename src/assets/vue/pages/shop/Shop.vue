@@ -58,7 +58,8 @@ export default {
     async loadProducts() {
       try {
         await this.$store.dispatch('products/loadProducts', {
-          shopId: this.shopId
+          shopId: this.shopId,
+          numberOfPagination: 1
         })
       } catch (error) {
       }
