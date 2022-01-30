@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - ./src:/var/www
+      - ./..:/var/www
       - ./apache/vhost.conf:/etc/apache2/sites-available/000-default.conf
     working_dir: "/var/www"
     links:
