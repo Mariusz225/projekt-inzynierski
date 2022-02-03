@@ -60,6 +60,7 @@ export default {
       return this.$store.getters['cart/cartItems']
     },
     cartTotal() {
+      console.log(this.$store.getters['cart/cartTotal'])
       return this.$store.getters['cart/cartTotal'].toFixed(2)
     },
   }

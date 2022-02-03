@@ -34,6 +34,20 @@
         </label>
       </div>
     </div>
+
+    <h5 class="mt-4">Wybierz datę dostawy</h5>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="deliveryHours" :id="deliveryHours1"/>
+      <label class="form-check-label" :for="deliveryHours1">
+        8:00-12:00
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="deliveryHours" :id="deliveryHours2"/>
+      <label class="form-check-label" :for="deliveryHours2">
+        12:00-16:00
+      </label>
+    </div>
   </div>
 
 

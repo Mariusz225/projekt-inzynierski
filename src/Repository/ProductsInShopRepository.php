@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\ProductsInShop;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Query\Parameter;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +21,22 @@ class ProductsInShopRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductsInShop::class);
     }
 
-    // /**
-    //  * @return ProductsInShop[] Returns an array of ProductsInShop objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findProductsInShopByCategory($category, $shop)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('products_in_shop')
+            ->leftJoin('products_in_shop.products', 'products')
+            ->leftJoin('products.category', 'category')
+            ->leftJoin('products_in_shop.shop', 'shop')
+            ->where('category = :category')
+            ->andWhere('shop = :shop')
+//            ->andWhere('orderl = :order')
+//            ->orderBy('article.date', 'DESC')
+            ->setParameters(new ArrayCollection(array(
+                new Parameter('category', $category),
+                new Parameter('shop', $shop)
+            )))
             ->getQuery()
             ->getResult()
-        ;
+            ;
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?ProductsInShop
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

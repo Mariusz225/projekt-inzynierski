@@ -57,4 +57,5 @@ export default {
 
         context.commit('setShops', shops);
     },
+
 }

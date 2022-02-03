@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import Order from "../../components/layout/employee/shopkeeper/Order";
-import OrderItems from "../../components/layout/employee/completingTheOrder/OrderItems";
+import Order from "../../components/layout/shopService/shopkeeper/Order";
+import OrderItems from "../../components/layout/shopService/completingTheOrder/OrderItems";
 export default {
   components: {OrderItems, Order},
   props: ['shopId', 'orderId'],

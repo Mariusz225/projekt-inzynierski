@@ -1,6 +1,25 @@
 <template>
   <div className="container-lg" v-if="productsAreLoaded">
     <div v-if="userHasCartInShop === true">
+      <div class="d-flex justify-content-between">
+        <select-category
+            :shopId="this.shopId"
+        ></select-category>
+        <div>
+          <nav aria-label="...">
+            <ul class="pagination">
+              <li class="page-item" :class="{'disabled': paginationNumber===1}">
+                <a class="page-link" @click="changePagination(-1)" href="#" tabindex="-1" aria-disabled="true">Poprzednie</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" @click="changePagination(1)" href="#">Następne</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+      </div>
+
       <div className="row">
         <div className="col-md-4 col-lg-3 mb-4" v-for="product in products">
 
@@ -28,12 +47,17 @@
 <script>
 import Product from "../../components/layout/shop/Product";
 import UserHasCartInOtherShop from "../../components/layout/products/UserHasCartInOtherShop";
+import SelectCategory from "../../components/layout/shop/SelectCategory";
 export default {
-  components: {UserHasCartInOtherShop, Product},
+  components: {SelectCategory, UserHasCartInOtherShop, Product},
   props: ['shopId'],
   data() {
     return {
       productsAreLoaded: false,
+      paginationNumber: 1,
+      //TODO category
+      category: ''
+
     }
   },
   computed: {
@@ -55,19 +79,39 @@ export default {
     },
   },
   methods: {
-    async loadProducts() {
+    async loadProducts(pagination) {
       try {
         await this.$store.dispatch('products/loadProducts', {
           shopId: this.shopId,
-          numberOfPagination: 1
+          category: 'all',
+          numberOfPagination: pagination
         })
       } catch (error) {
       }
       this.productsAreLoaded = true;
     },
+    async loadCategories() {
+      try {
+        await this.$store.dispatch('products/loadCategories', {
+          shopId: this.shopId,
+        })
+      } catch (error) {
+      }
+    },
+    changePagination(value) {
+      if (value === 1) {
+        this.paginationNumber += 1;
+        this.loadProducts(this.paginationNumber)
+      } else if (value === -1) {
+        this.paginationNumber -= 1;
+        console.log(this.paginationNumber)
+        this.loadProducts(this.paginationNumber)
+      }
+    }
   },
   created() {
-    this.loadProducts();
+    this.loadCategories();
+    this.loadProducts(1);
   },
 }
 </script>

@@ -8,7 +8,7 @@ import Test from './tests/Test'
 import LogIn from "./pages/auth/LogIn";
 import Register from "./pages/auth/Register";
 import Owner from "./pages/shopService/Owner";
-import Shopkeeper from "./pages/shopService/Shopkeeper";
+import Shopkeeper from "./pages/shopService/shopkeeper/Shopkeeper";
 import Driver from "./pages/shopService/Driver";
 import CompletingTheOrder from "./pages/shopService/CompletingTheOrder";
 import DeliveryOfTheOrder from "./pages/shopService/DeliveryOfTheOrder";

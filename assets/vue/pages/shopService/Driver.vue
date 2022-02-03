@@ -21,9 +21,10 @@
 
   <div v-else>
     <div class="card" v-for="order in orders">
-      <order>
-
-      </order>
+      <order
+          :key="order.id"
+          :order="order"
+      ></order>
     </div>
   </div>
 
@@ -32,8 +33,8 @@
 </template>
 
 <script>
-import Order from "../../components/layout/employee/driver/Order";
-import CompletingTheOrder from "../../components/layout/employee/driver/CompletingTheOrder";
+import Order from "../../components/layout/shopService/driver/Order";
+import CompletingTheOrder from "../../components/layout/shopService/driver/CompletingTheOrder";
 export default {
   components: {CompletingTheOrder, Order},
   props: ['shopId'],

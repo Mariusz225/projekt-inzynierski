@@ -68,6 +68,7 @@ export default {
         shopId: this.shopId,
         quantity: this.quantity,
         product: this.product,
+        // productPrice: this.product.product
       })
     },
     increment() {

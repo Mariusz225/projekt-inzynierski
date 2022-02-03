@@ -8,6 +8,7 @@ use App\Entity\DateAvailability;
 use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Repository\CategoryRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Repository\ProductsInShopRepository;
@@ -16,6 +17,7 @@ use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,9 +34,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ShopController extends AbstractController
 {
     /**
-     * @Rest\Get("/getProductsInShop/{id}/{numberOfPagination}")
+     * @Rest\Get("/getProductsInShop/{id}/{category}/{numberOfPagination}")
      * @param int $id
+     * @param string $category
      * @param int $numberOfPagination
+     * @param PaginatorInterface $paginator
      * @param ShopRepository $shopRepository
      * @param ProductsInShopRepository $productsInShopRepository
      * @param SerializerInterface $serializer
@@ -43,33 +47,68 @@ class ShopController extends AbstractController
      */
     public function index(
         int $id,
+        string $category,
         int $numberOfPagination,
+        CategoryRepository $categoryRepository,
         ShopRepository $shopRepository,
+        PaginatorInterface $paginator,
         ProductsInShopRepository $productsInShopRepository,
         SerializerInterface $serializer,
         EntityManagerInterface $em
     ): JsonResponse
     {
-        $shop = $shopRepository->findOneBy([
-            'id' => $id
-        ]);
+        if ($category === 'all') {
+            $products = $productsInShopRepository->findBy([
+                'shop' => $shopRepository->find($id),
+            ]);
+        } else {
+            $category = $categoryRepository->findOneBy([
+                'name' => $category
+            ]);
+            $shop = $shopRepository->find($id);
+            $products = $productsInShopRepository->findProductsInShopByCategory($category, $shop);
+        }
 
-//        $productsInShopRepository->findBy([],['id' => 'ASC'],24);
 
-        $products = $productsInShopRepository->findBy([
-            'shop' => $shopRepository->find($id),
-        ], [], 12);
-
+        $pagination = $paginator->paginate(
+            $products,
+            $numberOfPagination,
+            12
+        );
 
 
 //        $products = $shop->getProductsInShop();
 
 
-        $data = $serializer->serialize($products, JsonEncoder::FORMAT, ['groups' => 'products_in_shop']);
+        $data = $serializer->serialize($pagination, JsonEncoder::FORMAT, ['groups' => 'products_in_shop']);
 
 
 //        var_dump(count($products));
 //        return $this->json($products);
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @Rest\Get("/getCategoriesInShop/{id}")
+     * @param int $id
+     * @param CategoryRepository $categoryRepository
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $em
+     * @return JsonResponse
+     */
+    public function getCategoriesInShop(
+        int $id,
+        CategoryRepository $categoryRepository,
+        SerializerInterface $serializer,
+        EntityManagerInterface $em
+    ): JsonResponse
+    {
+        $categories = $categoryRepository->findAll();
+
+
+        $data = $serializer->serialize($categories, JsonEncoder::FORMAT, ['groups' => 'category']);
+
+
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 

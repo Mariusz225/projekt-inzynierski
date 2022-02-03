@@ -9,19 +9,20 @@
       <div class="me-auto p-2 d-flex">
 
 
-<!--        <time>{{ order.date }}</time>-->
         <div class="m-auto">
           Zamówienie-{{order.id}}
+          <time>{{ order.date }}</time>
+
 
           <!--          {{orderIsImportant}}-->
         </div>
 
       </div>
-<!--      <router-link :to="{name: 'completingTheOrder', params: {orderId: order.id}}">-->
+      <router-link :to="{name: 'completingTheOrder', params: {orderId: order.id}}">
         <button class="p-2 btn" @click="goToCompletingOrder">
           <font-awesome-icon :icon="['fas', 'arrow-circle-right']" class="fa-2x" style="color:green"></font-awesome-icon>
         </button>
-<!--      </router-link>-->
+      </router-link>
 
     </div>
   </div>

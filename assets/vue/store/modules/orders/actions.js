@@ -41,9 +41,14 @@ export default {
         const orders = [];
 
         for (const key in responseData) {
+
             const order = {
                 id: responseData[key].id,
                 date: responseData[key].date,
+                town: responseData[key].town,
+                street: responseData[key].street,
+                phoneNumber: responseData[key].phoneNumber,
+                postcode: responseData[key].postcode,
             }
             orders.push(order);
         }

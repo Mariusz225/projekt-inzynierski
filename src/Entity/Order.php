@@ -54,11 +54,6 @@ class Order
     private $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="orders")
-     */
-    private $employee;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="driverOrders")
      */
     private $driver;
@@ -75,16 +70,19 @@ class Order
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups ({"order_shopkeeper"})
      */
     private $street;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups ({"order_shopkeeper"})
      */
     private $postcode;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups ({"order_shopkeeper"})
      */
     private $town;
 
@@ -95,8 +93,14 @@ class Order
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups ({"order_shopkeeper"})
      */
     private $phoneNumber;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="orders")
+     */
+    private $picker;
 
     public function __construct()
     {
@@ -182,18 +186,6 @@ class Order
     public function setDate(?\DateTimeInterface $date): self
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getEmployee(): ?Employee
-    {
-        return $this->employee;
-    }
-
-    public function setEmployee(?Employee $employee): self
-    {
-        $this->employee = $employee;
 
         return $this;
     }
@@ -290,6 +282,18 @@ class Order
     public function setPhoneNumber(?string $phoneNumber): self
     {
         $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    public function getPicker(): ?Employee
+    {
+        return $this->picker;
+    }
+
+    public function setPicker(?Employee $picker): self
+    {
+        $this->picker = $picker;
 
         return $this;
     }

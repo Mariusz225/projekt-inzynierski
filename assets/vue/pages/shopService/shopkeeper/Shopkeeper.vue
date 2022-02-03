@@ -14,9 +14,9 @@
             </div>
           </router-link>
 
-          <button class="p-2 btn btn-secondary" @click="cancelCompletingOrder">
-            Anuluj
-          </button>
+<!--          <button class="p-2 btn btn-secondary" @click="cancelCompletingOrder">-->
+<!--            Anuluj-->
+<!--          </button>-->
 
         </div>
       </div>
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import Order from "../../components/layout/employee/shopkeeper/Order";
+import Order from "../../../components/layout/shopService/shopkeeper/Order";
 export default {
   components: {Order},
   props: ['shopId'],
@@ -51,7 +51,7 @@ export default {
     },
     userHasStartedOrder() {
       if (this.$store.getters['employee/getStartedOrder'] !== false) {
-        // console.log(this.$store.getters['employee/getStartedOrder'])
+        // console.log(this.$store.getters['shopService/getStartedOrder'])
         return this.$store.getters['employee/getStartedOrder']
       }
     },

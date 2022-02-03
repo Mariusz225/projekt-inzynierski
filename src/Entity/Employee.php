@@ -40,19 +40,19 @@ class Employee
     private $role = [];
 
     /**
-     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="employee")
-     */
-    private $orders;
-
-    /**
      * @ORM\OneToMany(targetEntity=Order::class, mappedBy="driver")
      */
     private $driverOrders;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="picker")
+     */
+    private $orders;
+
     public function __construct()
     {
-        $this->orders = new ArrayCollection();
         $this->driverOrders = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,36 +99,6 @@ class Employee
     /**
      * @return Collection|Order[]
      */
-    public function getOrders(): Collection
-    {
-        return $this->orders;
-    }
-
-    public function addOrder(Order $order): self
-    {
-        if (!$this->orders->contains($order)) {
-            $this->orders[] = $order;
-            $order->setEmployee($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOrder(Order $order): self
-    {
-        if ($this->orders->removeElement($order)) {
-            // set the owning side to null (unless already changed)
-            if ($order->getEmployee() === $this) {
-                $order->setEmployee(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Order[]
-     */
     public function getDriverOrders(): Collection
     {
         return $this->driverOrders;
@@ -150,6 +120,36 @@ class Employee
             // set the owning side to null (unless already changed)
             if ($driverOrder->getDriver() === $this) {
                 $driverOrder->setDriver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->setPicker($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): self
+    {
+        if ($this->orders->removeElement($order)) {
+            // set the owning side to null (unless already changed)
+            if ($order->getPicker() === $this) {
+                $order->setPicker(null);
             }
         }
 

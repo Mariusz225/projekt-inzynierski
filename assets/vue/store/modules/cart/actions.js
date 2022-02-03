@@ -7,12 +7,11 @@ export default {
             quantity: payload.quantity,
         };
 
-
         const localRequest = {
             productId: payload.productId,
             quantity: payload.quantity,
             product: payload.product,
-            price: payload.price
+            price: payload.product.price
         }
 
         const response = await fetch(`/cartController/updateCart`,{
@@ -63,8 +62,6 @@ export default {
             cartItems.push(cartItem)
         }
 
-        // console.log(shopId)
-
         context.commit('setCartItems', cartItems)
         context.commit('setShopId', shopId)
     },
@@ -75,17 +72,11 @@ export default {
         );
 
         const responseData = await response.json();
-        // responseData[key].productShop = undefined;
-
-        // console.log(responseData)
 
         if (!response.ok) {
 
         }
 
-        // console.log(shopId)
-
-        // context.commit('setCartItems', cartItems)
         context.commit('setShopId', null)
     },
 }
