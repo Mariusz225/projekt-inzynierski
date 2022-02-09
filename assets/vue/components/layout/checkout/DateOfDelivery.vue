@@ -35,16 +35,16 @@
       </div>
     </div>
 
-    <h5 class="mt-4">Wybierz datę dostawy</h5>
+    <h5 class="mt-4">Wybierz godzinę dostawy</h5>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="deliveryHours" :id="deliveryHours1"/>
-      <label class="form-check-label" :for="deliveryHours1">
+      <input class="form-check-input" type="radio" v-model="deliveryHour" id="deliveryHours1"/>
+      <label class="form-check-label" for="deliveryHours1">
         8:00-12:00
       </label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="deliveryHours" :id="deliveryHours2"/>
-      <label class="form-check-label" :for="deliveryHours2">
+      <input class="form-check-input" type="radio" v-model="deliveryHour" id="deliveryHours2"/>
+      <label class="form-check-label" for="deliveryHours2">
         12:00-16:00
       </label>
     </div>
@@ -68,12 +68,13 @@ export default {
   emits: ['set-step', 'set-date-id'],
   data() {
     return {
-      deliveryDate: null
+      deliveryDate: null,
+      deliveryHour: ''
     };
   },
   computed: {
     dates() {
-      // console.log(this.$store.getters['shop/getShopDatesAvailabilities'].setHours(0,0,0,0))
+      console.log(this.$store.getters['shop/getShopDatesAvailabilities'])
       // console.log(this.dateId)
       return this.$store.getters['shops/getShopDatesAvailabilities'];
     },

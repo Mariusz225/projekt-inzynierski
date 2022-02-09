@@ -50,11 +50,12 @@ import UserHasCartInOtherShop from "../../components/layout/products/UserHasCart
 import SelectCategory from "../../components/layout/shop/SelectCategory";
 export default {
   components: {SelectCategory, UserHasCartInOtherShop, Product},
-  props: ['shopId'],
+  props: ['shopId', 'categoryName'],
   data() {
     return {
       productsAreLoaded: false,
       paginationNumber: 1,
+      //TODO category
       // category: ''
 
     }
@@ -70,7 +71,7 @@ export default {
       if (this.$store.getters['cart/getShopId'] !== undefined) {
         //TODO bug
         return parseInt(this.shopId) === this.$store.getters['cart/getShopId']
-        || this.shopId === this.$store.getters['cart/getShopId']
+            || this.shopId === this.$store.getters['cart/getShopId']
       } else if (this.$store.getters['cart/getShopId'] === undefined) {
         return true;
       }
@@ -85,16 +86,18 @@ export default {
       try {
         await this.$store.dispatch('products/loadProducts', {
           shopId: this.shopId,
+          categoryName: this.categoryName,
           numberOfPagination: pagination
         })
       } catch (error) {
       }
       this.productsAreLoaded = true;
     },
-    async loadNumberOfProducts() {
+    async loadNumberOfProductsInCategory() {
       try {
         await this.$store.dispatch('products/loadNumberOfProducts', {
           shopId: this.shopId,
+          categoryName: this.category
         })
       } catch (error) {
       }
@@ -113,14 +116,14 @@ export default {
         this.loadProducts(this.paginationNumber)
       } else if (value === -1) {
         this.paginationNumber -= 1;
-        // console.log(this.paginationNumber)
+        console.log(this.paginationNumber)
         this.loadProducts(this.paginationNumber)
       }
     }
   },
   created() {
     this.loadCategories();
-    this.loadNumberOfProducts();
+    this.loadNumberOfProductsInCategory();
     this.loadProducts(1);
   },
 }

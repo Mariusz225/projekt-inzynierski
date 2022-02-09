@@ -34,12 +34,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ShopController extends AbstractController
 {
     /**
-     * @Rest\Get("/getProductsInShop/{id}/{category}/{numberOfPagination}")
+     * @Rest\Get("/getProductsInShop/{id}/{categoryName}/{numberOfPagination}")
      * @param int $id
-     * @param string $category
      * @param int $numberOfPagination
-     * @param PaginatorInterface $paginator
+     * @param string $categoryName
+     * @param CategoryRepository $categoryRepository
      * @param ShopRepository $shopRepository
+     * @param PaginatorInterface $paginator
      * @param ProductsInShopRepository $productsInShopRepository
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $em
@@ -47,7 +48,95 @@ class ShopController extends AbstractController
      */
     public function index(
         int $id,
-        string $category,
+        int $numberOfPagination,
+        string $categoryName,
+        CategoryRepository $categoryRepository,
+        ShopRepository $shopRepository,
+        PaginatorInterface $paginator,
+        ProductsInShopRepository $productsInShopRepository,
+        SerializerInterface $serializer,
+        EntityManagerInterface $em
+    ): JsonResponse
+    {
+        if ($categoryName === 'undefined') {
+            $products = $productsInShopRepository->findBy([
+                'shop' => $shopRepository->find($id),
+            ]);
+        } else {
+            $category = $categoryRepository->findOneBy([
+                'name' => $categoryName
+            ]);
+            $shop = $shopRepository->find($id);
+
+            $products = $productsInShopRepository->findProductsInShopByCategory($category, $shop);
+
+        }
+
+        $pagination = $paginator->paginate(
+            $products,
+            $numberOfPagination,
+            12
+        );
+
+        if ($pagination->count() === 0) {
+            return new JsonResponse(false);
+        }
+
+
+//        $products = $shop->getProductsInShop();
+
+
+        $data = $serializer->serialize($pagination, JsonEncoder::FORMAT, ['groups' => 'products_in_shop']);
+
+
+//        var_dump(count($products));
+//        return $this->json($products);
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @Rest\Get("/getNumberOfProductsInShop/{id}")
+     * @param int $id
+     * @param ShopRepository $shopRepository
+     * @param PaginatorInterface $paginator
+     * @param ProductsInShopRepository $productsInShopRepository
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $em
+     * @return JsonResponse
+     */
+    public function getNumberOfProductsInShop(
+        int $id,
+        ShopRepository $shopRepository,
+        PaginatorInterface $paginator,
+        ProductsInShopRepository $productsInShopRepository,
+        SerializerInterface $serializer,
+        EntityManagerInterface $em
+    ): JsonResponse
+    {
+//        if ($category === 'all') {
+//        $products = $productsInShopRepository->findBy([
+//            'shop' => $shopRepository->find($id),
+//        ]);
+        $shop = $shopRepository->find($id);
+        $numberOfProducts = $shop->getProductsInShop()->count();
+
+        return new JsonResponse($numberOfProducts, Response::HTTP_OK, [], true);
+    }
+
+    /**
+     * @Rest\Get("/getProductsInShopByCategory/{id}/{categoryId}/{numberOfPagination}")
+     * @param int $id
+     * @param int $numberOfPagination
+     * @param CategoryRepository $categoryRepository
+     * @param ShopRepository $shopRepository
+     * @param PaginatorInterface $paginator
+     * @param ProductsInShopRepository $productsInShopRepository
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $em
+     * @return JsonResponse
+     */
+    public function getProductsInShopByCategory(
+        int $id,
         int $numberOfPagination,
         CategoryRepository $categoryRepository,
         ShopRepository $shopRepository,
@@ -57,17 +146,17 @@ class ShopController extends AbstractController
         EntityManagerInterface $em
     ): JsonResponse
     {
-        if ($category === 'all') {
-            $products = $productsInShopRepository->findBy([
-                'shop' => $shopRepository->find($id),
-            ]);
-        } else {
-            $category = $categoryRepository->findOneBy([
-                'name' => $category
-            ]);
-            $shop = $shopRepository->find($id);
-            $products = $productsInShopRepository->findProductsInShopByCategory($category, $shop);
-        }
+//        if ($category === 'all') {
+        $products = $productsInShopRepository->findBy([
+            'shop' => $shopRepository->find($id),
+        ]);
+//        } else {
+//            $category = $categoryRepository->findOneBy([
+//                'name' => $category
+//            ]);
+//            $shop = $shopRepository->find($id);
+//            $products = $productsInShopRepository->findProductsInShopByCategory($category, $shop);
+//        }
 
 
         $pagination = $paginator->paginate(

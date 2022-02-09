@@ -5,7 +5,8 @@
 <!--      <router-link :to="{name: 'categoryInShop', params: {categoryName: this.selected}}">-->
 <!--        -->
 <!--      </router-link>-->
-      <option @click="dupa" v-for="category in categories">{{category.name}}</option>
+      <option @click="xd">Wszystko</option>
+      <option @click="" v-for="category in categories">{{category.name}}</option>
     </select>
 <!--    <span>Selected: {{ selected }}</span>-->
   </div>
@@ -29,7 +30,7 @@ export default {
   watch: {
     selected() {
       // console.log(this.$route.params.shopId)
-      if (this.selected === '') {
+      if (this.selected === 'Wszystko') {
         router.push({ name: 'shop', params: {shopId: this.$route.params.shopId}})
       } else {
         router.push({ name: 'categoryInShop', params: {shopId: this.$route.params.shopId, categoryName: this.selected}})
@@ -43,14 +44,14 @@ export default {
       try {
         await this.$store.dispatch('products/loadProducts', {
           shopId: this.shopId,
-          category: this.selected,
+          categoryName: this.selected,
           numberOfPagination: 1
         })
       } catch (error) {
       }
       this.productsAreLoaded = true;
       console.log('ss')
-    }
+    },
   }
 }
 </script>

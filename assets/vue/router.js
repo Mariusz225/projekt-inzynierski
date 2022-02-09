@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from "vue-router";
 
 import LandingPage from './pages/landingPage/LandingPage';
 import Shop from "./pages/shop/Shop";
+import ShopWithCategories from "./pages/shop/ShopWithCategories";
 import Cart from './pages/order/Cart';
 import Checkout from './pages/order/Checkout';
 import Test from './tests/Test'
@@ -21,6 +22,17 @@ const router = createRouter({
             path: '/:shopId',
             component: Shop,
             name:'shop',
+            props: true
+        },
+        // {
+        //     path: '/:shopId/Wszystko',
+        //     redirect: 'shop',
+        //     props: true
+        // },
+        {
+            path: '/:shopId/:categoryName',
+            component: ShopWithCategories,
+            name:'categoryInShop',
             props: true
         },
         {path: '/cart', component: Cart, name:'cart'},

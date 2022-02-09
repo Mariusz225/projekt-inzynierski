@@ -3,6 +3,10 @@ export default {
         state.products = payload;
     },
 
+    setNumberOfProducts(state, payload) {
+        state.numberOfProducts = payload;
+    },
+
     setCategories(state, payload) {
         state.categories = payload;
     }

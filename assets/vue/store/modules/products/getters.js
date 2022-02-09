@@ -4,5 +4,8 @@ export default {
     },
     categories(state) {
         return state.categories
+    },
+    numberOfProducts(state) {
+        return state.numberOfProducts
     }
 }

@@ -1,8 +1,8 @@
 export default {
     async loadProducts(context, payload) {
-        console.log(payload.category)
+        // console.log(payload.category)
         const response = await fetch(
-            `/shopController/getProductsInShop/${payload.shopId}/${payload.category}/${payload.numberOfPagination}`
+            `/shopController/getProductsInShop/${payload.shopId}/${payload.categoryName}/${payload.numberOfPagination}`
         );
 
         const responseData = await response.json();
@@ -11,18 +11,34 @@ export default {
 
         }
 
-        const products = [];
+        // console.log(responseData)
+        if (responseData !== false) {
+            const products = [];
 
-        for (const key in responseData) {
-            const product = {
-                id: responseData[key].id,
-                name: responseData[key].products.name,
-                price: responseData[key].price
+            for (const key in responseData) {
+                const product = {
+                    id: responseData[key].id,
+                    name: responseData[key].products.name,
+                    price: responseData[key].price
+                }
+                products.push(product);
             }
-            products.push(product);
-        }
 
-        context.commit('setProducts', products)
+            context.commit('setProducts', products)
+        } else return(0);
+
+
+    },
+    async loadNumberOfProducts(context, payload) {
+        const response = await fetch(
+            `/shopController/getNumberOfProductsInShop/${payload.shopId}/${payload.categoryName}`
+        );
+
+        const responseData = await response.json();
+
+        // console.log(responseData);
+
+        context.commit('setNumberOfProducts', responseData)
     },
 
     async loadCategories(context, payload) {
