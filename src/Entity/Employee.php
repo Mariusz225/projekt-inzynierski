@@ -33,13 +33,6 @@ class Employee
     private $shop;
 
     /**
-     * @ORM\Column(type="json")
-     * @Groups({"employee_info"})
-
-     */
-    private $role = [];
-
-    /**
      * @ORM\OneToMany(targetEntity=Order::class, mappedBy="driver")
      */
     private $driverOrders;
@@ -48,6 +41,11 @@ class Employee
      * @ORM\OneToMany(targetEntity=Order::class, mappedBy="picker")
      */
     private $orders;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=EmployeeRole::class, inversedBy="employees")
+     */
+    private $employeeRole;
 
     public function __construct()
     {
@@ -80,18 +78,6 @@ class Employee
     public function setShop(?Shop $shop): self
     {
         $this->shop = $shop;
-
-        return $this;
-    }
-
-    public function getRole(): ?array
-    {
-        return $this->role;
-    }
-
-    public function setRole(array $role): self
-    {
-        $this->role = $role;
 
         return $this;
     }
@@ -155,4 +141,21 @@ class Employee
 
         return $this;
     }
+
+    public function getEmployeeRole(): ?EmployeeRole
+    {
+        return $this->employeeRole;
+    }
+
+    public function setEmployeeRole(?EmployeeRole $employeeRole): self
+    {
+        $this->employeeRole = $employeeRole;
+
+        return $this;
+    }
+
+//    public function __toString()
+//    {
+//        return $this->name;
+//    }
 }

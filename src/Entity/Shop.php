@@ -48,16 +48,20 @@ class Shop
     private $dateAvailabilities;
 
     /**
-     * @ORM\Column(type="array", nullable=true)
-     * @Groups ({"shop_info"})
-     */
-    private $coordinates = [];
-
-    /**
      * @ORM\Column(type="string", length=255)
      * @Groups ({"shop_info"})
      */
     private $address;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $longitude;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $latitude;
 
     public function __construct()
     {
@@ -209,18 +213,6 @@ class Shop
         return $this;
     }
 
-    public function getCoordinates(): ?array
-    {
-        return $this->coordinates;
-    }
-
-    public function setCoordinates(?array $coordinates): self
-    {
-        $this->coordinates = $coordinates;
-
-        return $this;
-    }
-
     public function getAddress(): ?string
     {
         return $this->address;
@@ -229,6 +221,30 @@ class Shop
     public function setAddress(string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(string $longitude): self
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getLatitude(): ?string
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(string $latitude): self
+    {
+        $this->latitude = $latitude;
 
         return $this;
     }

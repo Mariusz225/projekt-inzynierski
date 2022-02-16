@@ -33,12 +33,6 @@ class Category
     private $products;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="categories")
-     * @Groups({"category"})
-     */
-    private $parentCategory;
-
-    /**
      * @ORM\OneToMany(targetEntity=Category::class, mappedBy="parentCategory")
      */
     private $categories;
@@ -96,45 +90,11 @@ class Category
         return $this;
     }
 
-    public function getParentCategory(): ?self
-    {
-        return $this->parentCategory;
-    }
-
-    public function setParentCategory(?self $parentCategory): self
-    {
-        $this->parentCategory = $parentCategory;
-
-        return $this;
-    }
-
     /**
      * @return Collection|self[]
      */
     public function getCategories(): Collection
     {
         return $this->categories;
-    }
-
-    public function addCategory(self $category): self
-    {
-        if (!$this->categories->contains($category)) {
-            $this->categories[] = $category;
-            $category->setParentCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(self $category): self
-    {
-        if ($this->categories->removeElement($category)) {
-            // set the owning side to null (unless already changed)
-            if ($category->getParentCategory() === $this) {
-                $category->setParentCategory(null);
-            }
-        }
-
-        return $this;
     }
 }

@@ -2,16 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\StatusRepository;
+use App\Repository\EmployeeRoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ORM\Entity(repositoryClass=StatusRepository::class)
+ * @ORM\Entity(repositoryClass=EmployeeRoleRepository::class)
  */
-class Status
+class EmployeeRole
 {
     /**
      * @ORM\Id
@@ -22,18 +21,17 @@ class Status
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups ({"order_shopkeeper", "order_info"})
      */
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="status")
+     * @ORM\OneToMany(targetEntity=Employee::class, mappedBy="employeeRole")
      */
-    private $orders;
+    private $employees;
 
     public function __construct()
     {
-        $this->orders = new ArrayCollection();
+        $this->employees = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -54,29 +52,29 @@ class Status
     }
 
     /**
-     * @return Collection|Order[]
+     * @return Collection|Employee[]
      */
-    public function getOrders(): Collection
+    public function getEmployees(): Collection
     {
-        return $this->orders;
+        return $this->employees;
     }
 
-    public function addOrder(Order $order): self
+    public function addEmployee(Employee $employee): self
     {
-        if (!$this->orders->contains($order)) {
-            $this->orders[] = $order;
-            $order->setStatus($this);
+        if (!$this->employees->contains($employee)) {
+            $this->employees[] = $employee;
+            $employee->setEmployeeRole($this);
         }
 
         return $this;
     }
 
-    public function removeOrder(Order $order): self
+    public function removeEmployee(Employee $employee): self
     {
-        if ($this->orders->removeElement($order)) {
+        if ($this->employees->removeElement($employee)) {
             // set the owning side to null (unless already changed)
-            if ($order->getStatus() === $this) {
-                $order->setStatus(null);
+            if ($employee->getEmployeeRole() === $this) {
+                $employee->setEmployeeRole(null);
             }
         }
 

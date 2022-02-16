@@ -30,12 +30,6 @@ class Order
     private $status;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="orders")
-     * @Groups ({"order_info"})
-     */
-    private $user;
-
-    /**
      * @ORM\OneToMany(targetEntity=OrderItem::class, mappedBy="oneOrder")
      * @Groups ({"order_items_info"})
      */
@@ -120,18 +114,6 @@ class Order
     public function setStatus(?Status $status): self
     {
         $this->status = $status;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
 
         return $this;
     }
