@@ -28,19 +28,9 @@ class Shop
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProductsInShop::class, mappedBy="shop")
-     */
-    private $productsInShop;
-
-    /**
      * @ORM\OneToMany(targetEntity=Order::class, mappedBy="shop")
      */
     private $orders;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Employee::class, mappedBy="shop")
-     */
-    private $employees;
 
     /**
      * @ORM\OneToMany(targetEntity=DateAvailability::class, mappedBy="shop")
@@ -55,20 +45,32 @@ class Shop
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups ({"shop_info"})
+     */
+    private $latitude;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Groups ({"shop_info"})
      */
     private $longitude;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="shop")
      */
-    private $latitude;
+    private $products;
+
+    /**
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="shop")
+     */
+    private $users;
 
     public function __construct()
     {
-        $this->productsInShop = new ArrayCollection();
         $this->orders = new ArrayCollection();
-        $this->employees = new ArrayCollection();
         $this->dateAvailabilities = new ArrayCollection();
+        $this->products = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,36 +86,6 @@ class Shop
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|ProductsInShop[]
-     */
-    public function getProductsInShop(): Collection
-    {
-        return $this->productsInShop;
-    }
-
-    public function addProductsInShop(ProductsInShop $productsInShop): self
-    {
-        if (!$this->productsInShop->contains($productsInShop)) {
-            $this->productsInShop[] = $productsInShop;
-            $productsInShop->setShop($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProductsInShop(ProductsInShop $productsInShop): self
-    {
-        if ($this->productsInShop->removeElement($productsInShop)) {
-            // set the owning side to null (unless already changed)
-            if ($productsInShop->getShop() === $this) {
-                $productsInShop->setShop(null);
-            }
-        }
 
         return $this;
     }
@@ -142,36 +114,6 @@ class Shop
             // set the owning side to null (unless already changed)
             if ($order->getShop() === $this) {
                 $order->setShop(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Employee[]
-     */
-    public function getEmployees(): Collection
-    {
-        return $this->employees;
-    }
-
-    public function addEmployee(Employee $employee): self
-    {
-        if (!$this->employees->contains($employee)) {
-            $this->employees[] = $employee;
-            $employee->setShop($this);
-        }
-
-        return $this;
-    }
-
-    public function removeEmployee(Employee $employee): self
-    {
-        if ($this->employees->removeElement($employee)) {
-            // set the owning side to null (unless already changed)
-            if ($employee->getShop() === $this) {
-                $employee->setShop(null);
             }
         }
 
@@ -225,6 +167,18 @@ class Shop
         return $this;
     }
 
+    public function getLatitude(): ?string
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(string $latitude): self
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
     public function getLongitude(): ?string
     {
         return $this->longitude;
@@ -237,14 +191,62 @@ class Shop
         return $this;
     }
 
-    public function getLatitude(): ?string
+    /**
+     * @return Collection|Product[]
+     */
+    public function getProducts(): Collection
     {
-        return $this->latitude;
+        return $this->products;
     }
 
-    public function setLatitude(string $latitude): self
+    public function addProduct(Product $product): self
     {
-        $this->latitude = $latitude;
+        if (!$this->products->contains($product)) {
+            $this->products[] = $product;
+            $product->setShop($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Product $product): self
+    {
+        if ($this->products->removeElement($product)) {
+            // set the owning side to null (unless already changed)
+            if ($product->getShop() === $this) {
+                $product->setShop(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users[] = $user;
+            $user->setShop($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getShop() === $this) {
+                $user->setShop(null);
+            }
+        }
 
         return $this;
     }

@@ -63,6 +63,7 @@ export default {
       } else {
         this.quantity = quantity
       }
+      // console.log(this.product)
       this.$store.dispatch('cart/updateCart', {
         productId: this.id,
         shopId: this.shopId,

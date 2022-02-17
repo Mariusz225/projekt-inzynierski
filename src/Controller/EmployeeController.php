@@ -30,66 +30,66 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class EmployeeController extends AbstractController
 {
-    private ?\App\Entity\Employee $employee;
+//    private ?\App\Entity\Employee $employee;
+
+    private ?\Symfony\Component\Security\Core\User\UserInterface $user;
 
     public function __construct(
-        Security $security,
-        EmployeeRepository $employeeRepository
+        Security $security
+//        EmployeeRepository $employeeRepository
     )
     {
-        $user = $security->getUser();
-        $this->employee = $employeeRepository->findOneBy([
-            'user' => $user
-        ]);
+        $this->user = $security->getUser();
+//        $this->employee = $employeeRepository->findOneBy([
+//            'user' => $user
+//        ]);
     }
     /**
      * @Rest\Get("/getEmployeeInfo")
      * @param ShopRepository $shopRepository
-     * @param ProductsInShopRepository $productsInShopRepository
+//     * @param ProductsInShopRepository $productsInShopRepository
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $em
      * @return JsonResponse
      */
     public function index(
         ShopRepository $shopRepository,
-        ProductsInShopRepository $productsInShopRepository,
+//        ProductsInShopRepository $productsInShopRepository,
         SerializerInterface $serializer,
         EntityManagerInterface $em
     ): JsonResponse
     {
-//        var_dump($this->shopService);
-//
-//
-////        $shop = $shopRepository->findOneBy([
-////            'id' => $id
-////        ]);
-////        $products = $shop->getProductsInShop();
-////
-        $data = $serializer->serialize($this->employee, JsonEncoder::FORMAT, ['groups' => 'employee_info']);
+        $data = [
+            'shopId' => $this->user->getShop()->getId(),
+            'position' => $this->user->getPosition()->getName()
+        ];
+
+        $data = $serializer->serialize($data, JsonEncoder::FORMAT);
 
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
     /**
-     * @Rest\Get ("/getOrdersFromTheStore/{id}", name="getOrdersFromTheStore")
+     * @Rest\Get ("/getOrdersFromTheStore", name="getOrdersFromTheStore")
      */
     public function getOrdersFromTheStore(
-        int $id,
         ShopRepository $shopRepository,
         SerializerInterface $serializer
     ): JsonResponse
     {
         $userHasAccess = false;
 
-        $shop = $shopRepository->find($id);
+//        $shop = $shopRepository->find();
+        $shop = $this->user->getShop();
 
-        $roles = $this->employee->getRole();
+        $position = $this->user->getPosition()->getName();
 
-        foreach ($roles as $role) {
-            if ($role === 'ROLE_SHOPKEEPER' && $this->employee->getShop() === $shop) {
-                $userHasAccess = true;
-                break;
-            }
+//        foreach ($roles as $role) {
+
+//        }
+        if ($position === 'Sklepikarz' && $this->user->getShop() === $shop) {
+            $userHasAccess = true;
+//                break;
         }
 
         if ($userHasAccess) {
@@ -179,11 +179,11 @@ class EmployeeController extends AbstractController
         StatusRepository $statusRepository
     ): JsonResponse
     {
-        $employeeHasStartedAnotherOrder = $this->employee->getOrders();
+        $employeeHasStartedAnotherOrder = $this->user->getOrders();
 
         if (!$employeeHasStartedAnotherOrder->isEmpty()) {
             $order = $orderRepository->findOneBy([
-                'picker' => $this->employee,
+                'picker' => $this->user,
                 'status' => $statusRepository->findOneBy([
                     'name' => 'completed'
                 ])
@@ -227,11 +227,11 @@ class EmployeeController extends AbstractController
     ): JsonResponse
     {
 
-        if (!($this->employee->getShop()->getId() === $orderRepository->find($id)->getShop()->getId())) {
+        if (!($this->user->getShop()->getId() === $orderRepository->find($id)->getShop()->getId())) {
             return new JsonResponse(false);
         }
 
-        $orderInShop = $this->employee->getShop()->getOrders()->filter(function (Order $order) use ($id) {
+        $orderInShop = $this->user->getShop()->getOrders()->filter(function (Order $order) use ($id) {
             return (
                 $order->getId() === $id
             );
@@ -263,7 +263,7 @@ class EmployeeController extends AbstractController
     ): JsonResponse
     {
 
-        $employeeHasStartedAnotherOrder = $this->employee->getOrders()->filter(function (Order $order) use ($id) {
+        $employeeHasStartedAnotherOrder = $this->user->getOrders()->filter(function (Order $order) use ($id) {
             return (
                 $order->getStatus()->getName() === 'completed'
                 && $order->getId() !== $id
@@ -279,10 +279,10 @@ class EmployeeController extends AbstractController
                 'name' => 'completed'
             ]);
             $order->setStatus($statusCompleted);
-            $this->employee->addOrder($order);
+            $this->user->addOrder($order);
 
             $entityManager->persist($order);
-            $entityManager->persist($this->employee);
+            $entityManager->persist($this->user);
             $entityManager->flush();
 
             return new JsonResponse(true);

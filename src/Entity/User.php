@@ -42,13 +42,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Employee::class, mappedBy="user")
+     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="users")
      */
-    private $employees;
+    private $shop;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="picker")
+     */
+    private $orders;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Position::class, inversedBy="users")
+     */
+    private $position;
 
     public function __construct()
     {
-        $this->employees = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -140,38 +150,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    /**
-     * @return Collection|Employee[]
-     */
-    public function getEmployees(): Collection
+    public function __toString()
     {
-        return $this->employees;
+        return $this->email;
     }
 
-    public function addEmployee(Employee $employee): self
+    public function getShop(): ?Shop
     {
-        if (!$this->employees->contains($employee)) {
-            $this->employees[] = $employee;
-            $employee->setUser($this);
+        return $this->shop;
+    }
+
+    public function setShop(?Shop $shop): self
+    {
+        $this->shop = $shop;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): self
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders[] = $order;
+            $order->setPicker($this);
         }
 
         return $this;
     }
 
-    public function removeEmployee(Employee $employee): self
+    public function removeOrder(Order $order): self
     {
-        if ($this->employees->removeElement($employee)) {
+        if ($this->orders->removeElement($order)) {
             // set the owning side to null (unless already changed)
-            if ($employee->getUser() === $this) {
-                $employee->setUser(null);
+            if ($order->getPicker() === $this) {
+                $order->setPicker(null);
             }
         }
 
         return $this;
     }
 
-    public function __toString()
+    public function getPosition(): ?Position
     {
-        return $this->email;
+        return $this->position;
+    }
+
+    public function setPosition(?Position $position): self
+    {
+        $this->position = $position;
+
+        return $this;
     }
 }

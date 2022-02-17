@@ -43,39 +43,10 @@ class EnvironmentController extends AbstractController
         ShopRepository $shopRepository,
         StatusRepository $statusRepository,
         UserRepository $userRepository,
-        EmployeeRepository $employeeRepository,
-        EmployeeRoleRepository $employeeRoleRepository,
-        ProductsInShopRepository $productsInShopRepository,
         OrderItemRepository $orderItemRepository,
         OrderRepository $orderRepository
     ): Response
     {
-        //USER
-        $user = new User();
-        $user->setEmail('admin@admin.com');
-        $user->setPassword('$2y$13$9JHyLRf/XgtnQGeF1RhTsumARvc6Ix9rqqP9WV7iBmSUDE7pvIRb2');
-        $user->setRoles(['ROLE_ADMIN']);
-        $entityManager->persist($user);
-
-        $user = new User();
-        $user->setEmail('driver@driver.com');
-        $user->setPassword('$2y$13$9JHyLRf/XgtnQGeF1RhTsumARvc6Ix9rqqP9WV7iBmSUDE7pvIRb2');
-        $user->setRoles(['ROLE_EMPLOYEE']);
-        $entityManager->persist($user);
-
-        $user = new User();
-        $user->setEmail('shopkeeper1@shopkeeper.com');
-        $user->setPassword('$2y$13$9JHyLRf/XgtnQGeF1RhTsumARvc6Ix9rqqP9WV7iBmSUDE7pvIRb2');
-        $user->setRoles(['ROLE_EMPLOYEE']);
-        $entityManager->persist($user);
-
-        $user = new User();
-        $user->setEmail('shopkeeper2@shopkeeper.com');
-        $user->setPassword('$2y$13$9JHyLRf/XgtnQGeF1RhTsumARvc6Ix9rqqP9WV7iBmSUDE7pvIRb2');
-        $user->setRoles(['ROLE_EMPLOYEE']);
-        $entityManager->persist($user);
-
-        $entityManager->flush();
 
 
 
@@ -100,40 +71,36 @@ class EnvironmentController extends AbstractController
 
 
 
-        //EMPLOYEE ROLE
-        $employeeRole = new EmployeeRole();
-        $employeeRole->setName('Kierowca');
-        $entityManager->persist($employeeRole);
 
-        $employeeRole = new EmployeeRole();
-        $employeeRole->setName('Sprzedawca');
-        $entityManager->persist($employeeRole);
+        //USER
+        $user = new User();
+        $user->setEmail('admin@admin.com');
+        $user->setPassword('$2y$13$9JHyLRf/XgtnQGeF1RhTsumARvc6Ix9rqqP9WV7iBmSUDE7pvIRb2');
+        $user->setRoles(['ROLE_ADMIN']);
+        $entityManager->persist($user);
+
+        $user = new User();
+        $user->setEmail('driver@driver.com');
+        $user->setPassword('$2y$13$9JHyLRf/XgtnQGeF1RhTsumARvc6Ix9rqqP9WV7iBmSUDE7pvIRb2');
+        $user->setRoles(['ROLE_DRIVER']);
+        $user->setShop($shopRepository->find(1));
+        $entityManager->persist($user);
+
+        $user = new User();
+        $user->setEmail('shopkeeper1@shopkeeper.com');
+        $user->setPassword('$2y$13$9JHyLRf/XgtnQGeF1RhTsumARvc6Ix9rqqP9WV7iBmSUDE7pvIRb2');
+        $user->setRoles(['ROLE_PICKER']);
+        $user->setShop($shopRepository->find(1));
+        $entityManager->persist($user);
+
+        $user = new User();
+        $user->setEmail('shopkeeper2@shopkeeper.com');
+        $user->setPassword('$2y$13$9JHyLRf/XgtnQGeF1RhTsumARvc6Ix9rqqP9WV7iBmSUDE7pvIRb2');
+        $user->setRoles(['ROLE_PICKER']);
+        $user->setShop($shopRepository->find(1));
+        $entityManager->persist($user);
+
         $entityManager->flush();
-
-
-
-
-
-
-        //EMPLOYEE
-        $employee = new Employee();
-        $employee->setShop($shopRepository->find(1));
-        $employee->setUser($userRepository->find(2));
-        $employee->setEmployeeRole($employeeRoleRepository->find(1));
-        $entityManager->persist($employee);
-
-        $employee = new Employee();
-        $employee->setShop($shopRepository->find(1));
-        $employee->setUser($userRepository->find(3));
-        $employee->setEmployeeRole($employeeRoleRepository->find(2));
-        $entityManager->persist($employee);
-
-        $employee = new Employee();
-        $employee->setShop($shopRepository->find(1));
-        $employee->setUser($userRepository->find(4));
-        $employee->setEmployeeRole($employeeRoleRepository->find(2));
-        $entityManager->persist($employee);
-
 
 
 
@@ -151,40 +118,15 @@ class EnvironmentController extends AbstractController
 
 
         //PRODUCT
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 200; $i++) {
             $product = new Product();
             $product->setName("Produkt".$i);
             $product->setCategory($categoryRepository->find(rand(1,5)));
+            $product->setShop($shopRepository->find(rand(1,2)));
 
             $entityManager->persist($product);
         }
         $entityManager->flush();
-
-
-
-
-
-
-        //PRODUCT IN SHOP
-        for ($i = 1; $i <=100; $i++) {
-            $product = new ProductsInShop();
-            $product->setProducts($productRepository->find($i));
-            $product->setShop($shopRepository->find(1));
-            $product->setPrice(rand(1,10));
-            $entityManager->persist($product);
-        }
-        $entityManager->flush();
-        for ($i = 1; $i <=100; $i++) {
-            $product = new ProductsInShop();
-            $product->setProducts($productRepository->find($i));
-            $product->setShop($shopRepository->find(2));
-            $product->setPrice(rand(1,10));
-            $entityManager->persist($product);
-        }
-        $entityManager->flush();
-
-
-
 
 
 
@@ -243,7 +185,7 @@ class EnvironmentController extends AbstractController
             $order->setPostcode('76-200');
             $order->setTown('Słupsk');
             $order->setShop($shopRepository->find(1));
-            $order->setPicker($employeeRepository->find(2));
+            $order->setPicker($userRepository->find(2));
             $order->setStatus($statusRepository->find(4));
             $order->setEmail('email@email.com');
             $order->setPhoneNumber('123456789');

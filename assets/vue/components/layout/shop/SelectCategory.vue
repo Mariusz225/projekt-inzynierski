@@ -50,7 +50,7 @@ export default {
       } catch (error) {
       }
       this.productsAreLoaded = true;
-      console.log('ss')
+      // console.log('ss')
     },
   }
 }

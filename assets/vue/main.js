@@ -3,7 +3,7 @@ import {createApp} from "vue";
 import router from './router';
 import store from "./store";
 import App from './App';
-import AppService from './AppService';
+// import AppService from './AppService';
 // import BaseCard from './components/ui/BaseCard';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -30,10 +30,10 @@ app.mount('#app');
 
 
 
-const appService = createApp(AppService);
-appService.use(router);
-appService.use(store);
-
-appService.component('font-awesome-icon', FontAwesomeIcon);
-
-appService.mount('#service');
+// const appService = createApp(AppService);
+// appService.use(router);
+// appService.use(store);
+//
+// appService.component('font-awesome-icon', FontAwesomeIcon);
+//
+// appService.mount('#service');

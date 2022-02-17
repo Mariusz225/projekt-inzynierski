@@ -48,11 +48,6 @@ class Order
     private $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="driverOrders")
-     */
-    private $driver;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $name;
@@ -92,9 +87,14 @@ class Order
     private $phoneNumber;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Employee::class, inversedBy="orders")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="orders")
      */
     private $picker;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="orders")
+     */
+    private $driver;
 
     public function __construct()
     {
@@ -168,18 +168,6 @@ class Order
     public function setDate(?\DateTimeInterface $date): self
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getDriver(): ?Employee
-    {
-        return $this->driver;
-    }
-
-    public function setDriver(?Employee $driver): self
-    {
-        $this->driver = $driver;
 
         return $this;
     }
@@ -268,14 +256,26 @@ class Order
         return $this;
     }
 
-    public function getPicker(): ?Employee
+    public function getPicker(): ?User
     {
         return $this->picker;
     }
 
-    public function setPicker(?Employee $picker): self
+    public function setPicker(?User $picker): self
     {
         $this->picker = $picker;
+
+        return $this;
+    }
+
+    public function getDriver(): ?User
+    {
+        return $this->driver;
+    }
+
+    public function setDriver(?User $driver): self
+    {
+        $this->driver = $driver;
 
         return $this;
     }

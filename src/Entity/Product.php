@@ -17,6 +17,7 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"products_in_shop", "cart_items", "order_items_info"})
      */
     private $id;
 
@@ -26,20 +27,34 @@ class Product
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProductsInShop::class, mappedBy="products")
-     */
-    private $productsInShops;
-
-    /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"products_in_shop", "cart_items", "order_items_info"})
      */
     private $name;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="products")
+     * @Groups({"cart_items", "order_items_info"})
+     */
+    private $shop;
+
+    /**
+     * @ORM\OneToMany(targetEntity=OrderItem::class, mappedBy="product")
+     */
+    private $orderItem;
+
+    /**
+     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @Groups({"products_in_shop", "cart_items", "order_items_info"})
+
+     */
+    private $price;
+
     public function __construct()
     {
-        $this->productsInShops = new ArrayCollection();
+        $this->orderItem = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -58,36 +73,6 @@ class Product
         return $this;
     }
 
-    /**
-     * @return Collection|ProductsInShop[]
-     */
-    public function getProductsInShops(): Collection
-    {
-        return $this->productsInShops;
-    }
-
-    public function addProductsInShop(ProductsInShop $productsInShop): self
-    {
-        if (!$this->productsInShops->contains($productsInShop)) {
-            $this->productsInShops[] = $productsInShop;
-            $productsInShop->setProducts($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProductsInShop(ProductsInShop $productsInShop): self
-    {
-        if ($this->productsInShops->removeElement($productsInShop)) {
-            // set the owning side to null (unless already changed)
-            if ($productsInShop->getProducts() === $this) {
-                $productsInShop->setProducts(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getName(): ?string
     {
         return $this->name;
@@ -96,6 +81,60 @@ class Product
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getShop(): ?Shop
+    {
+        return $this->shop;
+    }
+
+    public function setShop(?Shop $shop): self
+    {
+        $this->shop = $shop;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|OrderItem[]
+     */
+    public function getOrderItem(): Collection
+    {
+        return $this->orderItem;
+    }
+
+    public function addOrderItem(OrderItem $orderItem): self
+    {
+        if (!$this->orderItem->contains($orderItem)) {
+            $this->orderItem[] = $orderItem;
+            $orderItem->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderItem(OrderItem $orderItem): self
+    {
+        if ($this->orderItem->removeElement($orderItem)) {
+            // set the owning side to null (unless already changed)
+            if ($orderItem->getProduct() === $this) {
+                $orderItem->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPrice(): ?string
+    {
+        return $this->price;
+    }
+
+    public function setPrice(string $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }

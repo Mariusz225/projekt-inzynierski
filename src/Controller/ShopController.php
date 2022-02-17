@@ -40,8 +40,8 @@ class ShopController extends AbstractController
      * @param string $categoryName
      * @param CategoryRepository $categoryRepository
      * @param ShopRepository $shopRepository
+     * @param ProductRepository $productRepository
      * @param PaginatorInterface $paginator
-     * @param ProductsInShopRepository $productsInShopRepository
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $em
      * @return JsonResponse
@@ -52,23 +52,29 @@ class ShopController extends AbstractController
         string $categoryName,
         CategoryRepository $categoryRepository,
         ShopRepository $shopRepository,
+        ProductRepository $productRepository,
         PaginatorInterface $paginator,
-        ProductsInShopRepository $productsInShopRepository,
         SerializerInterface $serializer,
         EntityManagerInterface $em
     ): JsonResponse
     {
         if ($categoryName === 'undefined') {
-            $products = $productsInShopRepository->findBy([
+            $products = $productRepository->findBy([
                 'shop' => $shopRepository->find($id),
             ]);
         } else {
-            $category = $categoryRepository->findOneBy([
-                'name' => $categoryName
-            ]);
-            $shop = $shopRepository->find($id);
+//            $category = $categoryRepository->findOneBy([
+//                'name' => $categoryName
+//            ]);
+//            $shop = $shopRepository->find($id);
 
-            $products = $productsInShopRepository->findProductsInShopByCategory($category, $shop);
+//            $products = $productsInShopRepository->findProductsInShopByCategory($category, $shop);
+            $products = $productRepository->findBy([
+                'category' => $categoryRepository->findOneBy([
+                    'name' => $categoryName
+                ]),
+                'shop' => $shopRepository->find($id)
+            ]);
 
         }
 
@@ -81,10 +87,6 @@ class ShopController extends AbstractController
         if ($pagination->count() === 0) {
             return new JsonResponse(false);
         }
-
-
-//        $products = $shop->getProductsInShop();
-
 
         $data = $serializer->serialize($pagination, JsonEncoder::FORMAT, ['groups' => 'products_in_shop']);
 
@@ -99,18 +101,18 @@ class ShopController extends AbstractController
      * @param int $id
      * @param ShopRepository $shopRepository
      * @param PaginatorInterface $paginator
-     * @param ProductsInShopRepository $productsInShopRepository
-     * @param SerializerInterface $serializer
-     * @param EntityManagerInterface $em
+//     * @param ProductsInShopRepository $productsInShopRepository
+//     * @param SerializerInterface $serializer
+//     * @param EntityManagerInterface $em
      * @return JsonResponse
      */
     public function getNumberOfProductsInShop(
         int $id,
         ShopRepository $shopRepository,
-        PaginatorInterface $paginator,
-        ProductsInShopRepository $productsInShopRepository,
-        SerializerInterface $serializer,
-        EntityManagerInterface $em
+        PaginatorInterface $paginator
+//        ProductsInShopRepository $productsInShopRepository,
+//        SerializerInterface $serializer,
+//        EntityManagerInterface $em
     ): JsonResponse
     {
 //        if ($category === 'all') {
@@ -118,63 +120,9 @@ class ShopController extends AbstractController
 //            'shop' => $shopRepository->find($id),
 //        ]);
         $shop = $shopRepository->find($id);
-        $numberOfProducts = $shop->getProductsInShop()->count();
+        $numberOfProducts = $shop->getProducts()->count();
 
         return new JsonResponse($numberOfProducts, Response::HTTP_OK, [], true);
-    }
-
-    /**
-     * @Rest\Get("/getProductsInShopByCategory/{id}/{categoryId}/{numberOfPagination}")
-     * @param int $id
-     * @param int $numberOfPagination
-     * @param CategoryRepository $categoryRepository
-     * @param ShopRepository $shopRepository
-     * @param PaginatorInterface $paginator
-     * @param ProductsInShopRepository $productsInShopRepository
-     * @param SerializerInterface $serializer
-     * @param EntityManagerInterface $em
-     * @return JsonResponse
-     */
-    public function getProductsInShopByCategory(
-        int $id,
-        int $numberOfPagination,
-        CategoryRepository $categoryRepository,
-        ShopRepository $shopRepository,
-        PaginatorInterface $paginator,
-        ProductsInShopRepository $productsInShopRepository,
-        SerializerInterface $serializer,
-        EntityManagerInterface $em
-    ): JsonResponse
-    {
-//        if ($category === 'all') {
-        $products = $productsInShopRepository->findBy([
-            'shop' => $shopRepository->find($id),
-        ]);
-//        } else {
-//            $category = $categoryRepository->findOneBy([
-//                'name' => $category
-//            ]);
-//            $shop = $shopRepository->find($id);
-//            $products = $productsInShopRepository->findProductsInShopByCategory($category, $shop);
-//        }
-
-
-        $pagination = $paginator->paginate(
-            $products,
-            $numberOfPagination,
-            12
-        );
-
-
-//        $products = $shop->getProductsInShop();
-
-
-        $data = $serializer->serialize($pagination, JsonEncoder::FORMAT, ['groups' => 'products_in_shop']);
-
-
-//        var_dump(count($products));
-//        return $this->json($products);
-        return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
     /**
@@ -204,7 +152,7 @@ class ShopController extends AbstractController
     /**
      * @Rest\Get("/getShopDatesAvailabilities")
      * @param ShopRepository $shopRepository
-     * @param ProductsInShopRepository $productsInShopRepository
+//     * @param ProductsInShopRepository $productsInShopRepository
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $em
      * @param SessionInterface $session
@@ -214,7 +162,7 @@ class ShopController extends AbstractController
      */
     public function getShopDatesAvailabilities(
         ShopRepository $shopRepository,
-        ProductsInShopRepository $productsInShopRepository,
+//        ProductsInShopRepository $productsInShopRepository,
         SerializerInterface $serializer,
         EntityManagerInterface $em,
         SessionInterface $session,
@@ -238,16 +186,8 @@ class ShopController extends AbstractController
             });
 
 
-//        $dateAvailabilities =  $shop->getDateAvailabilities()->filter(function (DateAvailability $dateAvailability) {
-//            return $dateAvailability->getQuantity() > 0;
-//        });
-
-
         $data = $serializer->serialize($dateAvailabilities, JsonEncoder::FORMAT, ['groups' => 'shop_date_availability']);
 
-
-//        var_dump(count($products));
-//        return $this->json($products);
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 

@@ -7,6 +7,7 @@ use App\Entity\OrderItem;
 use App\Repository\DateAvailabilityRepository;
 use App\Repository\OrderItemRepository;
 use App\Repository\OrderRepository;
+use App\Repository\ProductRepository;
 use App\Repository\ProductsInShopRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -67,7 +68,8 @@ class CartController extends AbstractController
         SerializerInterface $serializer,
         Request $request,
         OrderItemRepository $orderItemRepository,
-        ProductsInShopRepository $productsInShopRepository
+        ProductRepository $productRepository
+//        ProductsInShopRepository $productsInShopRepository
     ): JsonResponse
     {
         $em = $this->getDoctrine()->getManager();
@@ -77,12 +79,12 @@ class CartController extends AbstractController
 
         $cart = $this->cart;
 
-        $productInShop = $productsInShopRepository->find($productId);
-        $price = $productInShop->getPrice();
+        $product = $productRepository->find($productId);
+        $price = $product->getPrice();
 
         $orderItem = $orderItemRepository->findOneBy([
             'oneOrder' => $cart,
-            'productShop' => $productInShop
+            'product' => $product
         ]);
 
         if ($quantity === 0) {
@@ -102,8 +104,8 @@ class CartController extends AbstractController
         }
 
         if (!$cart->getShop()) {
-            $cart->setShop($productInShop->getShop());
-        } elseif ($cart->getShop() !== $productInShop->getShop()) {
+            $cart->setShop($product->getShop());
+        } elseif ($cart->getShop() !== $product->getShop()) {
             $data = $serializer->serialize(array('message' => 'badViewedShop'), JsonEncoder::FORMAT);
             return new JsonResponse($data, Response::HTTP_OK, [], true);
         }
@@ -112,7 +114,7 @@ class CartController extends AbstractController
             $orderItem = new OrderItem();
             $orderItem->setOneOrder($cart);
             $orderItem->setQuantity($quantity);
-            $orderItem->setProductShop($productInShop);
+            $orderItem->setProduct($product);
             $orderItem->setPrice($price);
             $cart->addOrderItem($orderItem);
             $cart->setShop($cart->getShop());

@@ -18,27 +18,22 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         {path: '/', component: LandingPage,},
-        {
-            path: '/:shopId',
-            component: Shop,
-            name:'shop',
-            props: true
-        },
+
         // {
         //     path: '/:shopId/Wszystko',
         //     redirect: 'shop',
         //     props: true
         // },
-        {
-            path: '/:shopId/:categoryName',
-            component: ShopWithCategories,
-            name:'categoryInShop',
-            props: true
-        },
         {path: '/cart', component: Cart, name:'cart'},
         {path: '/checkout', component: Checkout, name:'checkout'},
-        {path: '/login', component: LogIn},
+        // {path: '/login', component: LogIn},
         {path: '/register', component: Register},
+        {
+            path: '/service',
+            component: Owner,
+            name:'owner',
+            props: true
+        },
         {
             path: '/service/:shopId/owner',
             component: Owner,
@@ -67,6 +62,20 @@ const router = createRouter({
             path: '/service/:shopId/deliveryOfTheOrder/',
             component: DeliveryOfTheOrder,
             name: 'deliveryOfTheOrder',
+            props: true
+        },
+
+        {
+            path: '/:shopId',
+            component: Shop,
+            name:'shop',
+            props: true
+        },
+
+        {
+            path: '/:shopId/:categoryName',
+            component: ShopWithCategories,
+            name:'categoryInShop',
             props: true
         },
 
