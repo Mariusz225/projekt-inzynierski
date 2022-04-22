@@ -11,12 +11,12 @@
   </div>
 
   <div class="card" v-for="orderItem in orderItems">
-    s
-<!--    <order-items-->
-<!--        :key="orderItem.id"-->
-<!--        :orderItem="orderItem"-->
-<!--        @change-completed-status="changeCompletedStatus"-->
-<!--    ></order-items>-->
+<!--    {{orderItem}}-->
+    <order-items
+        :key="orderItem.id"
+        :orderItem="orderItem"
+        @change-completed-status="changeCompletedStatus"
+    ></order-items>
 
 
 
@@ -61,9 +61,9 @@
 
 <script>
 // import Order from "../../components/layout/shopService/shopkeeper/Order";
-// import OrderItems from "../../components/layout/shopService/completingTheOrder/OrderItems";
+import OrderItems from "../../components/layout/shopkeeper/OrderItems";
 export default {
-  // components: {OrderItems, Order},
+  components: {OrderItems},
   props: ['shopId', 'orderId'],
   data() {
     return {

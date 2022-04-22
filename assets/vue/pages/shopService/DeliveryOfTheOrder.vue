@@ -24,7 +24,7 @@
 
 <script>
 import Order from "../../components/layout/shopService/shopkeeper/Order";
-import OrderItems from "../../components/layout/shopService/completingTheOrder/OrderItems";
+import OrderItems from "../../../vueService/components/layout/shopkeeper/OrderItems";
 export default {
   components: {OrderItems, Order},
   props: ['shopId', 'orderId'],

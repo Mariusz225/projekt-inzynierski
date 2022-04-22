@@ -41,7 +41,7 @@ export default {
       } catch (error) {
 
       }
-      // this.$router.go(null);
+      this.$router.go(null);
 
     }
   },

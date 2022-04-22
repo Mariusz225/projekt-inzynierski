@@ -157,7 +157,8 @@ class CartController extends AbstractController
         Request $request,
         DateAvailabilityRepository $dateAvailabilityRepository,
         EntityManagerInterface $entityManager,
-        StatusRepository $statusRepository
+        StatusRepository $statusRepository,
+        SessionInterface $session
     ): JsonResponse
     {
         $cart = $this->cart;
@@ -185,6 +186,8 @@ class CartController extends AbstractController
 
         $entityManager->persist($cart);
         $entityManager->flush();
+
+        $session->remove('cart');
 
         return new JsonResponse('true', Response::HTTP_OK, [], true);
     }

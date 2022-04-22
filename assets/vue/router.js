@@ -5,19 +5,20 @@ import Shop from "./pages/shop/Shop";
 import ShopWithCategories from "./pages/shop/ShopWithCategories";
 import Cart from './pages/order/Cart';
 import Checkout from './pages/order/Checkout';
+import Ordered from './pages/order/Ordered';
 import Test from './tests/Test'
 import LogIn from "./pages/auth/LogIn";
 import Register from "./pages/auth/Register";
 import Owner from "./pages/shopService/Owner";
 import Shopkeeper from "./pages/shopService/shopkeeper/Shopkeeper";
-import Driver from "./pages/shopService/Driver";
+import Driver from "../vueService/pages/driver/Driver";
 import CompletingTheOrder from "./pages/shopService/CompletingTheOrder";
 import DeliveryOfTheOrder from "./pages/shopService/DeliveryOfTheOrder";
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        {path: '/', component: LandingPage,},
+        {path: '/', component: LandingPage, name:'landingPage'},
 
         // {
         //     path: '/:shopId/Wszystko',
@@ -26,6 +27,7 @@ const router = createRouter({
         // },
         {path: '/cart', component: Cart, name:'cart'},
         {path: '/checkout', component: Checkout, name:'checkout'},
+        {path: '/ordered', component: Ordered, name:'ordered'},
         // {path: '/login', component: LogIn},
         {path: '/register', component: Register},
         {

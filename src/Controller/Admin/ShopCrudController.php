@@ -20,8 +20,8 @@ class ShopCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
-            //TODO change to 2 strings
-            ArrayField::new('coordinates'),
+            TextField::new('longitude'),
+            TextField::new('latitude'),
             TextField::new('address'),
         ];
     }

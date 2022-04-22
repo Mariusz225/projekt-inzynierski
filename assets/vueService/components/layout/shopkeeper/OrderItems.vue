@@ -1,4 +1,6 @@
 <template>
+
+<!--  sss-->
   <div class="d-flex">
     <!--          <div class="col-auto ">-->
     <!--            <img src="https://picsum.photos/200" class="img-product " alt="...">-->
@@ -10,7 +12,7 @@
 
     <div class="card-body d-flex col-8">
       <div class="me-auto p-2 text-wrap">
-        {{orderItem.quantity}} x {{orderItem.productShop.products.name}}
+        {{orderItem.quantity}} x {{orderItem.product.name}}
 
       </div>
       <div class="p-2 mb-auto mt-auto" @click="">

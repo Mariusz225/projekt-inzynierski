@@ -152,12 +152,14 @@ export default {
     },
     async submitOrder() {
       try {
-        await this.$store.dispatch('orders/submitOrder', [
+        // console.log(this.deliveryDate)
+        await this.$store.dispatch('cart/submitOrder', [
             this.shippingAddressInputs,
-            this.deliveryDateId
+            this.deliveryDate.id
           ])
       } catch (error) {
       }
+      await this.$router.push({name: "ordered"})
     },
   }
 }

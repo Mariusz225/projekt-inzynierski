@@ -2,7 +2,7 @@ import products from "../products";
 
 export default {
     async updateCart(context, payload) {
-        console.log(payload.productId)
+        // console.log(payload.productId)
         const newRequest = {
             productId: payload.productId,
             quantity: payload.quantity,
@@ -84,4 +84,26 @@ export default {
 
         context.commit('setShopId', null)
     },
+
+    async submitOrder(context, payload) {
+
+        const newRequest = {
+            shippingAddressInputs: payload[0],
+            deliveryDateId: payload[1]
+        };
+
+        const response = await fetch(`cartController/submitOrder`, {
+            method: 'POST',
+            body: JSON.stringify(newRequest)
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+            throw new Error(responseData.message || 'Failed to send request.');
+        }
+
+        context.commit('setShopId', null)
+
+    }
 }

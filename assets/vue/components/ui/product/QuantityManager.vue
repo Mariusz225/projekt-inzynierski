@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  props:['quantityValue', 'id', 'product'],
+  props:['quantityValue', 'id', 'product', 'shopId'],
   data() {
     return {
       quantity: this.quantityValue,
@@ -38,6 +38,7 @@ export default {
         productId: this.id,
         quantity: this.quantity,
         product: this.product,
+        shopId: this.shopId
       })
     },
     increment() {

@@ -15,7 +15,10 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <!-- Right -->
         <ul class="navbar-nav me-auto">
+        </ul>
+        <ul class="navbar-nav">
           <li class="nav-item">
+            <button class="btn btn-secondary" @click="logout">Wyloguj się</button>
           </li>
         </ul>
       </div>
@@ -25,6 +28,18 @@
 
 <script>
 export default {
+  data() {
+    return {
+
+    }
+  },
+  methods: {
+    logout() {
+
+      window.location.replace('http://localhost:8000/login')
+      return this.$store.dispatch('employee/logout');
+    }
+  },
 }
 
 </script>

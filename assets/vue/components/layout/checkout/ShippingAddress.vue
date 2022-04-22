@@ -173,7 +173,9 @@ export default {
   data() {
     return {
       errorMessages: {
-        notNull: 'Te pole nie może być puste'
+        notNull: 'Te pole nie może być puste',
+        email: 'Wpisz poprawny adres e-mail',
+        phoneNumber: 'Wpisz poprawny numer telefonu',
       },
       error: {
         name: {},
@@ -225,12 +227,21 @@ export default {
       if (this.shippingAddressInputs.email === '') {
         this.error.email.hasNotError = false;
         this.error.email.errorValue = this.errorMessages.notNull;
+      } else if (/\S+@\S+\.\S+/.test(this.shippingAddressInputs.email) === false) {
+        this.error.email.hasNotError = false;
+        this.error.email.errorValue = this.errorMessages.email;
       } else this.error.email.hasNotError = true
+
     },
     validateInputPhoneNumber() {
       if (this.shippingAddressInputs.phoneNumber === '') {
         this.error.phoneNumber.hasNotError = false;
         this.error.phoneNumber.errorValue = this.errorMessages.notNull;
+      } else if (!/^\d+$/.test(this.shippingAddressInputs.phoneNumber)) {
+        this.error.phoneNumber.hasNotError = false;
+        this.error.phoneNumber.errorValue = this.errorMessages.phoneNumber;
+      } else if(this.shippingAddressInputs.phoneNumber === '') {
+
       } else this.error.phoneNumber.hasNotError = true
     },
     submitForm() {

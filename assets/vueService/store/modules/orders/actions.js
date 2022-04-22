@@ -28,7 +28,7 @@ export default {
         context.commit('setOrders', orders);
     },
     async getDriverOrdersInShop (context, payload) {
-        const response = await fetch(`/employeeController/getDriverOrdersInShop/${payload.shopId}`, {
+        const response = await fetch(`/employeeController/getDriverOrdersInShop`, {
             method: 'GET',
         });
 

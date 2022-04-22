@@ -49,4 +49,12 @@ export default {
 
         context.commit('setDriverHasStartedDelivery', responseData);
     },
+
+    async logout(context) {
+
+        const response = await fetch(`/logout`, {
+            method: 'GET',
+        });
+        context.commit('logout');
+    }
 };

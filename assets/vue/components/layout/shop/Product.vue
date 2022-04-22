@@ -14,6 +14,7 @@
         :id="id"
         :quantity-value="quantity"
         :product="product"
+        :shop-id="shopId"
     ></quantity-manager>
 
     <div className="text-center pt-1">
@@ -63,7 +64,7 @@ export default {
       } else {
         this.quantity = quantity
       }
-      // console.log(this.product)
+      console.log('xd')
       this.$store.dispatch('cart/updateCart', {
         productId: this.id,
         shopId: this.shopId,

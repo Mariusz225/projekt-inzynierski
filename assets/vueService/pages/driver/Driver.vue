@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import Order from "../../components/layout/shopService/driver/Order";
-import CompletingTheOrder from "../../components/layout/shopService/driver/CompletingTheOrder";
+import Order from "./Order";
+import CompletingTheOrder from "./CompletingTheOrder";
 export default {
   components: {CompletingTheOrder, Order},
   props: ['shopId'],

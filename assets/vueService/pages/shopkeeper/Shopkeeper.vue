@@ -76,8 +76,8 @@ export default {
       }
       this.isCheckedThatUserHasStartedOrder = true
     },
-    //TODO
     async cancelCompletingOrder() {
+      console.log('todo')
       try {
         await this.$store.dispatch('employee/cancelCompletingOrder')
       } catch (error) {

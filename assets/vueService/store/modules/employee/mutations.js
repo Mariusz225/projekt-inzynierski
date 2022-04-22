@@ -9,4 +9,7 @@ export default {
     setDriverHasStartedDelivery(state, payload) {
         state.driverHasStartedOrder = payload;
     },
+    logout(state) {
+        Object.assign(state, null)
+    }
 };

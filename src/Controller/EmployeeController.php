@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -105,53 +106,47 @@ class EmployeeController extends AbstractController
     }
 
     /**
-     * @Rest\Get ("/getDriverOrdersInShop/{id}", name="getDriverOrdersInShop")
+     * @Rest\Get ("/getDriverOrdersInShop", name="getDriverOrdersInShop")
      */
     public function getDriverOrdersInShop(
-        int $id,
         ShopRepository $shopRepository,
         SerializerInterface $serializer
     ): JsonResponse
     {
         //TODO role ?
-        $userHasAccess = false;
+//        $userHasAccess = false;
 
-        $shop = $shopRepository->find($id);
+//        $shop = $shopRepository->find(1);
 
-        if ($this->employee->getShop() === $shop) {
-            $userHasAccess = true;
-        }
+        $shop = $this->user->getShop();
 
 
+//        if ($userHasAccess) {
 
 
+        $driverHasStartedOrder =  $this->user->getOrders()->filter(function (Order $order) {
+            return $order->getStatus()->getName() === 'delivery';
+        });
 
-        if ($userHasAccess) {
-
-
-            $driverHasStartedOrder =  $this->employee->getOrders()->filter(function (Order $order) {
+        if(!$driverHasStartedOrder->isEmpty()) {
+            $orders = $shop->getOrders()->filter(function (Order $order) {
                 return $order->getStatus()->getName() === 'delivery';
             });
-
-            if(!$driverHasStartedOrder->isEmpty()) {
-                $orders = $shop->getOrders()->filter(function (Order $order) {
-                    return $order->getStatus()->getName() === 'delivery';
-                });
-            } else {
-                $orders = $shop->getOrders()->filter(function (Order $order) {
-                    return $order->getStatus()->getName() === 'waitingForDelivery';
-                });
-            }
+        } else {
+            $orders = $shop->getOrders()->filter(function (Order $order) {
+                return $order->getStatus()->getName() === 'waitingForDelivery';
+            });
+        }
 
 //            $orders = $shop->getOrders()->filter(function (Order $order) {
 //                return $order->getStatus()->getName() === 'waitingForDelivery';
 //            });
 
-            $data = $serializer->serialize($orders, JsonEncoder::FORMAT, ['groups' => 'order_shopkeeper']);
+        $data = $serializer->serialize($orders, JsonEncoder::FORMAT, ['groups' => 'order_shopkeeper']);
 
-            return new JsonResponse($data, Response::HTTP_OK, [], true);
-        }
-        return new JsonResponse(false);
+        return new JsonResponse($data, Response::HTTP_OK, [], true);
+//        }
+//        return new JsonResponse(false);
     }
 
 //    /**
@@ -179,9 +174,13 @@ class EmployeeController extends AbstractController
         StatusRepository $statusRepository
     ): JsonResponse
     {
-        $employeeHasStartedAnotherOrder = $this->user->getOrders();
+//        $employeeHasStartedAnotherOrder = $this->user->getOrders();
+        $employeeHasStartedAnotherOrder = $orderRepository->findOneBy([
+            'picker' => $this->user,
+            'status' => $statusRepository->findOneBy(['name' => 'completed'])
+        ]);
 
-        if (!$employeeHasStartedAnotherOrder->isEmpty()) {
+        if ($employeeHasStartedAnotherOrder) {
             $order = $orderRepository->findOneBy([
                 'picker' => $this->user,
                 'status' => $statusRepository->findOneBy([
@@ -201,10 +200,10 @@ class EmployeeController extends AbstractController
     ): JsonResponse
     {
 
-        $employeeHasStartedDelivery = $this->employee->getOrders()->filter(function (Order $order) {
+        $employeeHasStartedDelivery = $this->user->getOrders()->filter(function (Order $order) {
             return (
                 $order->getStatus()->getName() === 'delivery'
-                && $order->getDriver()->getUser() === $this->getUser()
+                && $order->getDriver() === $this->getUser()
             );
         });
 
@@ -322,7 +321,8 @@ class EmployeeController extends AbstractController
     public function setOrderAsDelivery(
         OrderRepository $orderRepository,
         StatusRepository $statusRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        UserInterface $user
     ): JsonResponse
     {
 
@@ -334,13 +334,14 @@ class EmployeeController extends AbstractController
             'status' => $statusRepository->findOneBy([
                 'name' => 'waitingForDelivery'
             ]),
-            'shop' => $this->employee->getShop()
+            'shop' => $this->user->getShop()
         ]);
 
 
         foreach ($orders as $order) {
             $order->setStatus($status);
-            $order->setDriver($this->employee);
+            $order->setDriver($this->getUser());
+//            $this->user->addOrder();
             $entityManager->persist($order);
         }
 

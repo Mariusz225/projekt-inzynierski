@@ -1,5 +1,5 @@
 <template>
-  <the-navbar :isCart="isCart"></the-navbar>
+  <the-navbar :shopIdWhereIsCart="shopIdWhereIsCart"></the-navbar>
 <!--  <change-viewed-shop :viewedShopId="viewedShopId"></change-viewed-shop>-->
 <!--  <div v-if="badViewedShop">Nie można dodać z innego sklepu</div>-->
 <!--  {{userHasCartInOtherShop}}-->
@@ -16,9 +16,11 @@ export default {
     // isLandingPage() {
     //   return this.$route.name === 'landingPage'
     // },
-    isCart() {
+    shopIdWhereIsCart() {
+      console.log(this.$store.getters['cart/getShopId']);
+      return this.$store.getters['cart/getShopId']
       //TODO
-      return this.$store.getters['cart/isCart']
+      // return this.$store.getters['cart/isCart']
     },
     // //TODO ID sklepu gdzie jest koszyk
     // userHasCartInOtherShop() {

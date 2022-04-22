@@ -7,7 +7,6 @@
 
         <div class="m-auto">
           Zamówienie - {{order.id}}
-
         </div>
 
       </div>
