@@ -48,6 +48,7 @@ export default {
 
 <style>
 @import'~bootstrap/dist/css/bootstrap.css';
+/*@import'~bootstrap/js/dist/collapse.js';*/
 
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,

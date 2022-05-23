@@ -1,3 +1,6 @@
+start:
+    path: /start
+    controller: App\Controller\StartController::start
 login:
     path: /login
     controller: App\Controller\SecurityController::login
@@ -7,6 +10,11 @@ admin:
 service:
     path: /service/{wildcard}
     controller: App\Controller\BaseController::service
+    requirements:
+        wildcard: .*
+serviceXd:
+    path: /service
+    controller: App\Controller\BaseController::serviceXd
     requirements:
         wildcard: .*
 

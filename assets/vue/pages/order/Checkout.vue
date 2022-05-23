@@ -1,7 +1,7 @@
 <template>
   <div class="container-lg">
     <div class="row" style="margin-top: 25px">
-      <div class="col-md-4 order-md-2 mb-4">
+      <div class="col-md-4 order-md-2 mb-4 d-none d-md-block">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
           <span class="text-muted">Twój koszyk</span>
           <span class="badge badge-secondary badge-pill">{{5}}</span>
@@ -94,9 +94,9 @@
           <br>
           <div class="row">
             <div class="col-auto">
-              <div>
-                Jeśli złożysz zamówienie faktura zostanie wysłana na Twój adres e-mail: {{shippingAddressInputs.email}}
-              </div>
+<!--              <div>-->
+<!--                Jeśli złożysz zamówienie faktura zostanie wysłana na Twój adres e-mail: {{shippingAddressInputs.email}}-->
+<!--              </div>-->
               <div>
                 Kontunuacja oznacza zgodę naszego regulaminy.
               </div>

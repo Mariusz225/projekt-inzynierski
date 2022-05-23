@@ -8,12 +8,12 @@
         </a>
 
       <!-- Collapse button -->
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav1"
-              aria-controls="basicExampleNav1" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<!--      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav1"-->
+<!--              aria-controls="basicExampleNav1" aria-expanded="false" aria-label="Toggle navigation">-->
+<!--        <span class="navbar-toggler-icon"></span>-->
+<!--      </button>-->
       <!-- Links -->
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="" id="navbarSupportedContent">
         <!-- Right -->
         <ul class="navbar-nav me-auto">
         </ul>

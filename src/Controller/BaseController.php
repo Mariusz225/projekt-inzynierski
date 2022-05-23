@@ -15,6 +15,15 @@ class BaseController extends AbstractController
     {
         return $this->render('service.html.twig');
     }
+
+    /**
+     * @Route("/service", name="service")
+     */
+    public function serviceXd(): Response
+    {
+        return $this->redirectToRoute('service', ['wildcard' =>'']);
+    }
+
     /**
      * @Route("/{vueRouting}", name="main")
      */
