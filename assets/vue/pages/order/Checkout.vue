@@ -151,6 +151,9 @@ export default {
       this.deliveryDate = date;
     },
     async submitOrder() {
+
+      // this.$store.dispatch('cart/removeCart')
+
       try {
         // console.log(this.deliveryDate)
         await this.$store.dispatch('cart/submitOrder', [

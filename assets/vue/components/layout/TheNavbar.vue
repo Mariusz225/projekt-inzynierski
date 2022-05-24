@@ -18,7 +18,7 @@
         <ul class="navbar-nav me-auto">
         </ul>
         <ul class="navbar-nav m-0">
-          <li class="nav-item" v-if="shopIdWhereIsCart">
+          <li class="nav-item" v-if="isCart">
             <router-link :to="{ name: 'cart' }">
               <a href="#!" class="nav-link waves-effect">
                 Koszyk
@@ -35,11 +35,11 @@
 <script>
 export default {
   props: ['shopIdWhereIsCart'],
-  // computed: {
-  //   isCart() {
-  //     return this.$store.getters['cart/isCart']
-  //   },
-  // }
+  computed: {
+    isCart() {
+      return this.$store.getters['cart/isCart']
+    },
+  },
   methods: {
     goToShopWhereIsCart() {
       if (this.shopIdWhereIsCart) {

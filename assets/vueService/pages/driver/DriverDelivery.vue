@@ -6,18 +6,18 @@
       <div class="me-auto p-2 d-flex" @click="">
 
         <div class="m-auto">
-          Zamówienie {{order.id}}<br>
-          {{ order.town }} => {{order.street}}
+<!--          Zamówienie {{order.id}}<br>-->
+<!--          {{ order.town }} => {{order.street}}-->
 
         </div>
 
       </div>
+      {{orders}}
 
       <div class="p-2">
-<!--        <a :href="`tel:+${ mobile }`"><i class="fas fa-mobile"></i></a>-->
-        <button class="p-2 btn" @click="callToNumber(order.phoneNumber)">
-          <font-awesome-icon :icon="['fas', 'mobile-alt']" class="fa-2x"></font-awesome-icon>
-        </button>
+<!--        <button class="p-2 btn" @click="callToNumber(order.phoneNumber)">-->
+<!--          <font-awesome-icon :icon="['fas', 'mobile-alt']" class="fa-2x"></font-awesome-icon>-->
+<!--        </button>-->
 
 
       </div>
@@ -27,9 +27,9 @@
         </button>
       </div>
       <div class="p-2">
-        <button class="btn btn-primary" @click="orderDelivered">
+        <button class="btn btn-primary">
           Dostarczone
-<!--          {{order }}-->
+          <!--          {{order }}-->
         </button>
       </div>
 
@@ -47,6 +47,13 @@ export default {
       mobile: '8001234567'
     }
   },
+  computed: {
+    orders() {
+      console.log(this.$store.getters['orders/getOrders'])
+      return this.$store.getters['orders/getOrders'];
+
+    }
+  },
   methods: {
     callToNumber(number) {
       window.location ='tel:'+number;
@@ -57,22 +64,18 @@ export default {
       var postCodeAndTown = this.order.postcode + '+' + (this.order.town).replace(/\s+/g, '+').toLowerCase();
       window.open('https://www.google.pl/maps/dir/' + address + ',' + postCodeAndTown)
     },
-    orderDelivered() {
-      console.log('sss')
-
-      fetch(`/employeeController/setOrderAsDelivered/${this.order.id}`, {
-          method: 'GET',
-        });
-
-      this.$router.go()
-
-    }
-      //   await this.$store.dispatch('orders/getDriverOrdersInShop', {
-      //     shopId: this.shopId
-      //   })
-      // } catch (error) {
-      // }
-
+    async loadOrders() {
+      // console.log('ss')
+      try {
+        await this.$store.dispatch('orders/getDriverOrdersInShop', {
+          shopId: this.shopId
+        })
+      } catch (error) {
+      }
+    },
+  },
+  created() {
+    this.loadOrders();
   }
 }
 </script>

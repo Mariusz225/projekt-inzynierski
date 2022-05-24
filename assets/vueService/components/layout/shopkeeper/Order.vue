@@ -12,7 +12,7 @@
 
         <div class="m-auto">
           Zamówienie-{{order.id}}
-          <time>{{ order.date }}</time>
+          <time>{{ date }}</time>
 
 
           <!--          {{orderIsImportant}}-->
@@ -55,6 +55,16 @@ export default {
         return true;
       }
 
+    },
+    date() {
+      var date = new Date(this.order.date)
+      var month = date.getUTCMonth() + 1; //months from 1-12
+      var day = date.getUTCDate();
+      var year = date.getUTCFullYear();
+      return  year + "/" + month + "/" + day;
+
+      // var userTimezoneOffset = date.getTimezoneOffset() * 60000;
+      // return new Date(date.getTime() - userTimezoneOffset);
     }
   },
   methods: {
@@ -64,6 +74,9 @@ export default {
       var response = await this.$store.dispatch('orders/fetchOrderInfo', {
         orderId: this.orderId
       })
+
+      await this.$router.push({name: "completingTheOrder", params: {orderId: this.order.id}})
+
       console.log(response)
       if (response === 'cart') {
         console.log('nie da rady')

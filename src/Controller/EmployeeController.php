@@ -11,6 +11,8 @@ use App\Repository\OrderRepository;
 use App\Repository\ProductsInShopRepository;
 use App\Repository\ShopRepository;
 use App\Repository\StatusRepository;
+use App\Repository\UserRepository;
+use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -36,11 +38,15 @@ class EmployeeController extends AbstractController
     private ?\Symfony\Component\Security\Core\User\UserInterface $user;
 
     public function __construct(
-        Security $security
+        Security $security,
+        UserRepository $userRepository
 //        EmployeeRepository $employeeRepository
     )
     {
-        $this->user = $security->getUser();
+        $this->user = $userRepository->findOneBy([
+            'email' => $security->getUser()->getUserIdentifier()
+        ]);
+//        $this->user = $security->getUser();
 //        $this->employee = $employeeRepository->findOneBy([
 //            'user' => $user
 //        ]);
@@ -75,6 +81,8 @@ class EmployeeController extends AbstractController
      */
     public function getOrdersFromTheStore(
         ShopRepository $shopRepository,
+        OrderRepository $orderRepository,
+        StatusRepository $statusRepository,
         SerializerInterface $serializer
     ): JsonResponse
     {
@@ -94,9 +102,15 @@ class EmployeeController extends AbstractController
         }
 
         if ($userHasAccess) {
-            $orders = $shop->getOrders()->filter(function (Order $order) {
-                return $order->getStatus()->getName() === 'ordered';
-            });
+//            $orders = $shop->getOrders()->filter(function (Order $order) {
+//                return $order->getStatus()->getName() === 'ordered';
+//            });
+
+            $orders = $orderRepository->findBy([
+                'status' => $statusRepository->findOneBy(['name' => 'ordered'])
+            ], ['date' => 'asc']);
+
+
 
             $data = $serializer->serialize($orders, JsonEncoder::FORMAT, ['groups' => 'order_shopkeeper']);
 
@@ -110,6 +124,8 @@ class EmployeeController extends AbstractController
      */
     public function getDriverOrdersInShop(
         ShopRepository $shopRepository,
+        OrderRepository $orderRepository,
+        StatusRepository $statusRepository,
         SerializerInterface $serializer
     ): JsonResponse
     {
@@ -123,19 +139,40 @@ class EmployeeController extends AbstractController
 
 //        if ($userHasAccess) {
 
+        $isStartedDelivery = $orderRepository->findOneBy([
+            'driver' => $this->user,
+            'status' => $statusRepository->findOneBy(['name' => 'delivery']),
+            'date' => Carbon::today()
+        ]);
 
-        $driverHasStartedOrder =  $this->user->getOrders()->filter(function (Order $order) {
-            return $order->getStatus()->getName() === 'delivery';
-        });
 
-        if(!$driverHasStartedOrder->isEmpty()) {
-            $orders = $shop->getOrders()->filter(function (Order $order) {
-                return $order->getStatus()->getName() === 'delivery';
-            });
+//        $driverHasStartedOrder =  $this->user->getOrders()->filter(function (Order $order) {
+//            return $order->getStatus()->getName() === 'delivery';
+//        });
+
+
+        if($isStartedDelivery) {
+//            dd($isStartedDelivery);
+
+
+            $orders = $orderRepository->findBy([
+                'driver' => $this->user,
+                'date' => Carbon::today(),
+                'status' => $statusRepository->findOneBy(['name' => 'delivery'])
+            ]);
+//            $orders = $shop->getOrders()->filter(function (Order $order) {
+//                return $order->getStatus()->getName() === 'delivery';
+//            });
         } else {
-            $orders = $shop->getOrders()->filter(function (Order $order) {
-                return $order->getStatus()->getName() === 'waitingForDelivery';
-            });
+            $orders = $orderRepository->findBy([
+                'date' => Carbon::today(),
+                'status' => $statusRepository->findOneBy(['name' => 'waitingForDelivery'])
+            ]);
+
+//            dd($orders);
+//            $orders = $shop->getOrders()->filter(function (Order $order) {
+//                return $order->getStatus()->getName() === 'waitingForDelivery';
+//            });
         }
 
 //            $orders = $shop->getOrders()->filter(function (Order $order) {
@@ -197,6 +234,8 @@ class EmployeeController extends AbstractController
      * @Rest\Get ("/checkIfDriverHasStartedDelivery", name="checkIfDriverHasStartedDelivery")
      */
     public function checkIfDriverHasStartedDelivery(
+        OrderRepository $orderRepository,
+        StatusRepository $statusRepository
     ): JsonResponse
     {
 
@@ -206,12 +245,19 @@ class EmployeeController extends AbstractController
                 && $order->getDriver() === $this->getUser()
             );
         });
+//        dd($this->user->getUserIdentifier());
+        $isStartedDelivery = $orderRepository->findOneBy([
+            'driver' => $this->user,
+            'date' => Carbon::today(),
+            'status' => $statusRepository->findOneBy(['name' => 'delivery'])
+        ]);
 
-        if (!$employeeHasStartedDelivery->isEmpty()) {
+        if ($isStartedDelivery) {
             return new JsonResponse(true);
         }
-
         return new JsonResponse(false);
+
+
     }
 
     /**
@@ -334,16 +380,45 @@ class EmployeeController extends AbstractController
             'status' => $statusRepository->findOneBy([
                 'name' => 'waitingForDelivery'
             ]),
+            'date' => Carbon::today(),
             'shop' => $this->user->getShop()
         ]);
 
 
         foreach ($orders as $order) {
             $order->setStatus($status);
-            $order->setDriver($this->getUser());
+            $order->setDriver($this->user);
 //            $this->user->addOrder();
             $entityManager->persist($order);
         }
+
+        $entityManager->flush();
+
+        return new JsonResponse(true);
+    }
+
+    /**
+     * @Rest\Get ("/setOrderAsDelivered/{id}", name="setOrderAsDelivered")
+     */
+    public function setOrderAsDelivered(
+        int $id,
+        OrderRepository $orderRepository,
+        StatusRepository $statusRepository,
+        EntityManagerInterface $entityManager,
+        UserInterface $user
+    ): JsonResponse
+    {
+
+        $status = $statusRepository->findOneBy([
+            'name' => 'delivered'
+        ]);
+
+        $order = $orderRepository->find($id);
+
+        $order->setStatus($status);
+
+
+        $entityManager->persist($order);
 
         $entityManager->flush();
 

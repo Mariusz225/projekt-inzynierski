@@ -14,9 +14,9 @@
             </div>
           </router-link>
 
-          <button class="p-2 btn btn-secondary" @click="cancelCompletingOrder">
-            Anuluj
-          </button>
+<!--          <button class="p-2 btn btn-secondary" @click="cancelCompletingOrder">-->
+<!--            Anuluj-->
+<!--          </button>-->
 
         </div>
       </div>

@@ -1,62 +1,69 @@
 <template>
-  <div>
-    <h1>
-<!--      {{shopId}} - {{orderId}}-->
-    </h1>
-    <h2>
-<!--      {{numberOfAllOrderItems}}-->
-<!--      {{numberOfCompletedOrderItems}}-->
-<!--      {{allOrderItemsAreCompleted}}-->
-    </h2>
+  <div v-if="isCheckedThatUserHasStartedOrder === true">
+    <div class="container" v-if="parseInt(userHasStartedOrder) !== parseInt(orderId)">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Masz otwarte inne zamówienie {{orderId}}</h5>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div v-else>
+      <div class="card" v-for="orderItem in orderItems" >
+        <!--    {{orderItem}}-->
+        <order-items
+            :key="orderItem.id"
+            :orderItem="orderItem"
+            @change-completed-status="changeCompletedStatus"
+        ></order-items>
+
+
+
+        <!--    {{orderItem.id}}-->
+        <!--    <div class="d-flex">-->
+        <!--      &lt;!&ndash;          <div class="col-auto ">&ndash;&gt;-->
+        <!--      &lt;!&ndash;            <img src="https://picsum.photos/200" class="img-product " alt="...">&ndash;&gt;-->
+        <!--      &lt;!&ndash;          </div>&ndash;&gt;-->
+        <!--      <div class="float-start">-->
+        <!--        <img class="img-order-item"-->
+        <!--             src="https://picsum.photos/200" alt="Sample">-->
+        <!--      </div>-->
+
+        <!--      <div class="card-body d-flex col-8">-->
+        <!--        <div class="me-auto p-2 text-wrap">-->
+        <!--          {{ orderItem.quantity }} x {{ orderItem.productShop.products.name }}-->
+
+        <!--        </div>-->
+        <!--        <div class="p-2 mb-auto mt-auto">-->
+        <!--&lt;!&ndash;          <div>&ndash;&gt;-->
+        <!--&lt;!&ndash;            {{ orderItem.quantity }}&ndash;&gt;-->
+        <!--&lt;!&ndash;          </div>&ndash;&gt;-->
+        <!--&lt;!&ndash;          Komplemetuj&ndash;&gt;-->
+        <!--          <font-awesome-icon :icon="['far', 'check-circle']" class="fa-4x" style="color:green"></font-awesome-icon>-->
+        <!--&lt;!&ndash;          <font-awesome-icon :icon="['fas', 'check-circle']" class="fa-4x" style="color:green"></font-awesome-icon>&ndash;&gt;-->
+        <!--        </div>-->
+        <!--      </div>-->
+        <!--    </div>-->
+
+        <!--    <order-->
+        <!--        :key="order.id"-->
+        <!--        :order="order"-->
+        <!--    ></order>-->
+
+      </div>
+      <div style="margin-bottom: 100px"></div>
+
+      <div id="goToOrders" class="card-footer text-muted fixed-bottom m-4" v-if="numberOfAllOrderItems">
+        <router-link :to="{ name: 'shopkeeper' }" v-if="allOrderItemsAreCompleted">
+          <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="setOrderAsWaitingForDelivery">Skomplemetowane</button>
+        </router-link>
+        <button type="button" disabled class="btn btn-primary btn-lg btn-block" style="width: 100%" v-else>Skomplemetowane</button>
+      </div>
+    </div>
   </div>
 
-  <div class="card" v-for="orderItem in orderItems">
-<!--    {{orderItem}}-->
-    <order-items
-        :key="orderItem.id"
-        :orderItem="orderItem"
-        @change-completed-status="changeCompletedStatus"
-    ></order-items>
-
-
-
-<!--    {{orderItem.id}}-->
-<!--    <div class="d-flex">-->
-<!--      &lt;!&ndash;          <div class="col-auto ">&ndash;&gt;-->
-<!--      &lt;!&ndash;            <img src="https://picsum.photos/200" class="img-product " alt="...">&ndash;&gt;-->
-<!--      &lt;!&ndash;          </div>&ndash;&gt;-->
-<!--      <div class="float-start">-->
-<!--        <img class="img-order-item"-->
-<!--             src="https://picsum.photos/200" alt="Sample">-->
-<!--      </div>-->
-
-<!--      <div class="card-body d-flex col-8">-->
-<!--        <div class="me-auto p-2 text-wrap">-->
-<!--          {{ orderItem.quantity }} x {{ orderItem.productShop.products.name }}-->
-
-<!--        </div>-->
-<!--        <div class="p-2 mb-auto mt-auto">-->
-<!--&lt;!&ndash;          <div>&ndash;&gt;-->
-<!--&lt;!&ndash;            {{ orderItem.quantity }}&ndash;&gt;-->
-<!--&lt;!&ndash;          </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          Komplemetuj&ndash;&gt;-->
-<!--          <font-awesome-icon :icon="['far', 'check-circle']" class="fa-4x" style="color:green"></font-awesome-icon>-->
-<!--&lt;!&ndash;          <font-awesome-icon :icon="['fas', 'check-circle']" class="fa-4x" style="color:green"></font-awesome-icon>&ndash;&gt;-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-
-<!--    <order-->
-<!--        :key="order.id"-->
-<!--        :order="order"-->
-<!--    ></order>-->
-  </div>
-  <div id="goToOrders" class="card-footer text-muted fixed-bottom m-4" v-if="numberOfAllOrderItems">
-    <router-link :to="{ name: 'shopkeeper' }" v-if="allOrderItemsAreCompleted">
-      <button type="button" class="btn btn-primary btn-lg btn-block" style="width: 100%" @click="setOrderAsWaitingForDelivery">Skomplemetowane</button>
-    </router-link>
-    <button type="button" disabled class="btn btn-primary btn-lg btn-block" style="width: 100%" v-else>Skomplemetowane</button>
-  </div>
 </template>
 
 <script>
@@ -69,7 +76,8 @@ export default {
     return {
       // numberOfAllOrderItems: 0,
       numberOfCompletedOrderItems: 0,
-      allOrderItemsAreCompleted: false
+      allOrderItemsAreCompleted: false,
+      isCheckedThatUserHasStartedOrder: false
 
     }
   },
@@ -82,7 +90,14 @@ export default {
     numberOfAllOrderItems() {
       // console.log(this.$store.getters['orders/getOrderItems'].length)
       return this.$store.getters['orders/getOrderItems'].length
-    }
+    },
+
+    userHasStartedOrder() {
+      if (this.$store.getters['employee/getStartedOrder'] !== false) {
+        // console.log(this.$store.getters['shopService/getStartedOrder'])
+        return this.$store.getters['employee/getStartedOrder']
+      }
+    },
   },
   methods: {
     async loadOrderItems() {
@@ -116,7 +131,14 @@ export default {
       await this.$store.dispatch('orders/setOrderAsWaitingForDelivery', {
         orderId: this.orderId
       })
-    }
+    },
+    async checkIfShopkeeperHasStartedOrder() {
+      try {
+        await this.$store.dispatch('employee/checkIfShopkeeperHasStartedOrder')
+      } catch (error) {
+      }
+      this.isCheckedThatUserHasStartedOrder = true
+    },
   },
   watch: {
     numberOfCompletedOrderItems: function (val) {
@@ -124,6 +146,7 @@ export default {
     }
   },
   created() {
+    this.checkIfShopkeeperHasStartedOrder();
     this.fetchOrderInfo();
     this.loadOrderItems();
   }

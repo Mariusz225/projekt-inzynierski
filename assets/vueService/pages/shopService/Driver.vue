@@ -1,4 +1,7 @@
 <template>
+<!--  <div>-->
+<!--    sd-->
+<!--  </div>-->
   <div v-if="!driverHasStartedDelivery">
     <div class="card" v-for="order in orders">
 
@@ -30,6 +33,15 @@
 
 
 
+<!--  <div v-if="ordersAreLoaded">-->
+<!--    <div v-if="xd === true">-->
+<!--      sss-->
+<!--    </div>-->
+
+<!--  </div>-->
+
+
+
 </template>
 
 <script>
@@ -46,11 +58,17 @@ export default {
       // driverWorkStatus: 'waitingForDelivery',
       // driverWorkStatus: null
 
+      ordersAreLoaded: false,
+      xd: null
+
     }
   },
   computed: {
     orders() {
       // console.log(this.$store.getters['orders/getOrders'])
+      if (this.$store.getters['orders/getOrders'].length === 0) {
+        this.xd = true
+      } else this.xd = false
       return this.$store.getters['orders/getOrders'];
     },
     numberOfAllOrders() {
@@ -71,6 +89,7 @@ export default {
         })
       } catch (error) {
       }
+      this.ordersAreLoaded = true
     },
     changeStatus(status) {
       if (status === true) {
@@ -84,6 +103,8 @@ export default {
       await this.$store.dispatch('orders/setOrdersAsDelivery', {
         // orderId: this.orderId
       })
+      await this.$router.push({name: "completingTheOrderDriver"})
+
     },
     async checkIfDriverHasStartedDelivery() {
       try {

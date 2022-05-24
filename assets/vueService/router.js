@@ -4,6 +4,7 @@ import ShopkeeperModule from "./pages/shopkeeper/Shopkeeper";
 import DriverModule from "./pages/driver/Driver";
 import CompletingTheOrderShopkeeper from "./pages/shopkeeper/CompletingTheOrder";
 import CompletingTheOrderDriver from "./pages/driver/CompletingTheOrder";
+import DriverDelivery from "./pages/driver/DriverDelivery";
 import LogIn from "./pages/auth/LogIn";
 
 
@@ -42,6 +43,13 @@ const router = createRouter({
             name: 'driver',
             component: DriverModule
         },
+
+        {
+            path: '/service/driver/delivery',
+            name: 'driverDelivery',
+            component: DriverDelivery
+        },
+
         {
             path: '/service/driver/completingTheOrder',
             name: 'completingTheOrderDriver',

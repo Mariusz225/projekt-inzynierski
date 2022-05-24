@@ -1,6 +1,8 @@
 <template>
-  <div v-if="!driverHasStartedDelivery">
+  <div v-if="driverHasStartedDelivery === false">
+
     <div class="card" v-for="order in orders">
+
 
       <completing-the-order
           :key="order.id"
@@ -18,6 +20,8 @@
 
   </div>
 
+<!--  {{driverHasStartedDelivery}}-->
+<!--  {{orders}}-->
 
   <div v-else>
     <div class="card" v-for="order in orders">
@@ -25,6 +29,17 @@
           :key="order.id"
           :order="order"
       ></order>
+    </div>
+  </div>
+
+
+  <div v-if="ordersAreLoaded === true">
+    <div class="container" v-if="thereAreNoOrders">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Brak dostępnych zamówień</h5>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -46,11 +61,19 @@ export default {
       // driverWorkStatus: 'waitingForDelivery',
       // driverWorkStatus: null
 
+      ordersAreLoaded: false,
+      thereAreNoOrders: false
+
     }
   },
   computed: {
     orders() {
-      // console.log(this.$store.getters['orders/getOrders'])
+      // console.log(this.$store.getters['orders/getOrders'].length)
+      //
+      if (this.$store.getters['orders/getOrders'].length === 0) {
+        this.thereAreNoOrders = true
+      } else this.thereAreNoOrders = false
+
       return this.$store.getters['orders/getOrders'];
     },
     numberOfAllOrders() {
@@ -71,6 +94,7 @@ export default {
         })
       } catch (error) {
       }
+      this.ordersAreLoaded = true;
     },
     changeStatus(status) {
       if (status === true) {
@@ -84,6 +108,8 @@ export default {
       await this.$store.dispatch('orders/setOrdersAsDelivery', {
         // orderId: this.orderId
       })
+      this.$router.go();
+
     },
     async checkIfDriverHasStartedDelivery() {
       try {
