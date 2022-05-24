@@ -123,10 +123,10 @@ export default {
     this.loadNumberOfProducts();
     this.loadProducts(1);
   },
-  updated() {
-    this.loadCategories();
-    this.loadNumberOfProducts();
-    this.loadProducts(1);
-  }
+  // updated() {
+  //   this.loadCategories();
+  //   this.loadNumberOfProducts();
+  //   this.loadProducts(1);
+  // }
 }
 </script>
